@@ -1,3 +1,6 @@
+# IntelliJ directory
+.idea
+
 # GCP service account credentials
 packer-sa.json
 .DS_Store

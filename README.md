@@ -165,3 +165,10 @@ Currently, all node instances must be deployed in the same subnet, same zone/reg
 This is because they find each other by local and GCP internal DNS name resolution. This can
 be overcome if you set up separate DNS or static IP addresses for new nodes, and then ensure
 that the `causal_clustering_initial_discovery_members` metadata setting contains the right hosts.
+
+## Helpful documentation:
+
+* [Setup for VM based solutions on GCP](https://cloud.google.com/launcher/docs/partners/technical-components)
+* [Cloud Launcher VM solutions testing guidelines](https://cloud.google.com/launcher/docs/partners/vm-testing-guidelines)
+* [Marketplace solutions with Deployment Manager](https://cloud.google.com/launcher/docs/partners/dm-templates)
+* [Existing available Google Launchers](https://console.cloud.google.com/launcher/browse?filter=solution-type:vm&project=launcher-public&organizationId=1061230109173)

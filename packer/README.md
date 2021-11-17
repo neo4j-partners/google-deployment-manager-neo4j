@@ -7,9 +7,7 @@
 * Gcloud service account JSON credentials
 
 There is a service account there called `packer-sa` which is used
-for this process.  Credentials are stored in `packer-sa.json` which isn't in
-git for obvious reasons.  Gain access to the google project and grab a key, or
-contact <david.allen@neo4j.com> for access.
+for this process.
 
 ## Build Neo4j Enterprise Image
 

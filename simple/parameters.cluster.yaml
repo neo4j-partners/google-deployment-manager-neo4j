@@ -1,5 +1,6 @@
 imports:
   - path: deployment.py
+  - path: cluster.py
   - path: node.sh
 
 resources:

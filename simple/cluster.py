@@ -1,7 +1,9 @@
 URL_BASE = 'https://www.googleapis.com/compute/v1/projects/'
 
 def GenerateConfig(context):
-    sourceImage = URL_BASE + 'neo4j-public/global/images/neo4j-ee'
+    #sourceImage = URL_BASE + 'neo4j-public/global/images/neo4j-ee'
+    #https://console.cloud.google.com/compute/imagesDetail/projects/rhel-cloud/global/images/rhel-8-v20220303?project=neo4jbusinessdev
+    sourceImage = URL_BASE + 'rhel-cloud/global/images/rhel-8-v20220303'
 
     instanceTemplateName = context.env['deployment'] + '-cluster' + '-it'
     instanceTemplate = {

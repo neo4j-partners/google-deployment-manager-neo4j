@@ -1,0 +1,7 @@
+{
+  "defaultDeploymentType": "MULTI_VM",
+  "templateName": "neo4j",
+  "projectId": "neo4j-public",
+  "imageName": "neo4j-ee",
+  "useSolutionPackage": "true"
+}

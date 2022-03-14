@@ -66,6 +66,7 @@ def GenerateStartupScript(context):
     script = '#!/usr/bin/env bash\n\n'
     #script += 'DEPLOYMENT="' + context.env['deployment'] + '"\n'
  
+    script += 'nodeCount="' + str(context.properties['nodeCount']) + '"\n'
     script += 'adminPassword="' + context.properties['adminPassword'] + '"\n'
     script += 'graphDatabaseVersion="' + context.properties['graphDatabaseVersion'] + '"\n'
     script += 'graphDataScienceVersion="' + context.properties['graphDataScienceVersion'] + '"\n'

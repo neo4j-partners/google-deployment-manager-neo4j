@@ -68,11 +68,10 @@ def GenerateConfig(context):
 def GenerateStartupScript(context):
     script = '#!/usr/bin/env bash\n\n'
     script += 'DEPLOYMENT="' + context.env['deployment'] + '"\n'
-    script += 'CLUSTER="' + context.properties['cluster'] + '"\n'
 
     script += 'adminUsername="' + context.properties['adminUsername'] + '"\n'
     script += 'adminPassword="' + context.properties['adminPassword'] + '"\n'
 
-    script+= context.imports['server.sh']
+    script+= context.imports['node.sh']
 
     return script

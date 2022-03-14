@@ -4,56 +4,13 @@ imports:
   - path: node.sh
 
 info:
-  version: 1.0
+  version: 4.4.4
   title: Neo4j
 
 properties:
-  us-central1:
-    type: boolean
-    default: true
-  us-west1:
-    type: boolean
-    default: false
-  us-east1:
-    type: boolean
-    default: false
-  us-east4:
-    type: boolean
-    default: false
-  europe-west1:
-    type: boolean
-    default: true
-  europe-west2:
-    type: boolean
-    default: false
-  europe-west3:
-    type: boolean
-    default: false
-  asia-southeast1:
-    type: boolean
-    default: false
-  asia-east1:
-    type: boolean
-    default: true
-  asia-northeast1:
-    type: boolean
-    default: false
-  australia-southeast1:
-    type: boolean
-    default: false
-
-  defaultZone:
+  region:
     type: string
-    default: us-central1-f
-    x-googleProperty:
-      type: GCE_ZONE
-  dataDiskType:
-    type: string
-    default: pd-ssd
-    x-googleProperty:
-      type: GCE_DISK_TYPE
-      zoneProperty: defaultZone
-
+    default: us-east1
   nodeCount:
     type: integer
     default: 3
@@ -68,6 +25,12 @@ properties:
   diskSize:
     type: integer
     default: 20
+  dataDiskType:
+    type: string
+    default: pd-ssd
+    x-googleProperty:
+      type: GCE_DISK_TYPE
+      zoneProperty: defaultZone
   adminPassword:
     type: string
   graphDatabaseVersion:

@@ -2,27 +2,14 @@
 
 echo "Running node.sh"
 
-adminUsername=$1
-adminPassword=$2
-uniqueString=$3
-location=$4
-graphDatabaseVersion=$5
-graphDataScienceVersion=$6
-graphDataScienceLicenseKey=$7
-bloomVersion=$8
-bloomLicenseKey=$9
-nodeCount=$9
-
 echo "Using the settings:"
 echo adminUsername \'$adminUsername\'
 echo adminPassword \'$adminPassword\'
-echo uniqueString \'$uniqueString\'
-echo licenseKey \'$licenseKey\'
-echo location \'$location\'
 echo graphDatabaseVersion \'$graphDatabaseVersion\'
 echo graphDataScienceVersion \'$graphDataScienceVersion\'
+echo graphDataScienceLicenseKey \'$graphDataScienceLicenseKey\'
 echo bloomVersion \'$bloomVersion\'
-echo nodeCount \'$nodeCount\'
+echo bloomLicenseKey \'$bloomLicenseKey\'
 
 echo "Turning off firewalld"
 systemctl stop firewalld
@@ -41,9 +28,10 @@ echo Installing Graph Database...
 export NEO4J_ACCEPT_LICENSE_AGREEMENT=yes
 yum -y install neo4j-enterprise-${graphDatabaseVersion}
 
-echo Writing neo4j license key file...
-mkdir /etc/neo4j/license
-echo $licenseKey > /etc/neo4j/license/neo4j.license
+### This doesn't quite work.  There are actually two keys, one for GDS and one for bloom
+#echo Writing neo4j license key file...
+#mkdir /etc/neo4j/license
+#echo $licenseKey > /etc/neo4j/license/neo4j.license
 
 echo Configuring network in neo4j.conf...
 sed -i 's/#dbms.default_listen_address=0.0.0.0/dbms.default_listen_address=0.0.0.0/g' /etc/neo4j/neo4j.conf
@@ -54,13 +42,13 @@ nodeIndex=`curl -H Metadata:true "http://169.254.169.254/metadata/instance/compu
 publicHostname='vm'$nodeIndex'.node-'$uniqueString'.'$location'.cloudapp.azure.com'
 sed -i s/#dbms.default_advertised_address=localhost/dbms.default_advertised_address=${publicHostname}/g /etc/neo4j/neo4j.conf
 
-echo "Adding entries to /etc/hosts to route cluster traffic internally..."
-echo "
+#echo "Adding entries to /etc/hosts to route cluster traffic internally..."
+#echo "
 # Route cluster traffic internally
-10.0.0.4 vm0.node-${uniqueString}.${location}.cloudapp.azure.com
-10.0.0.5 vm1.node-${uniqueString}.${location}.cloudapp.azure.com
-10.0.0.6 vm2.node-${uniqueString}.${location}.cloudapp.azure.com
-" >> /etc/hosts
+#10.0.0.4 vm0.node-${uniqueString}.${location}.cloudapp.azure.com
+#10.0.0.5 vm1.node-${uniqueString}.${location}.cloudapp.azure.com
+#10.0.0.6 vm2.node-${uniqueString}.${location}.cloudapp.azure.com
+#" >> /etc/hosts
 
 if [[ $nodeCount == 1 ]]; then
   echo Running on a single node.

@@ -1,0 +1,6 @@
+imports:
+- path: neo4j.py
+
+resources:
+- name: neo4j
+  type: neo4j.py

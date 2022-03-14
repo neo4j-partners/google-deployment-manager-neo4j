@@ -52,10 +52,7 @@ def GenerateConfig(context):
             'region': context.properties['region'],
             'baseInstanceName': context.env['deployment'] + '-cluster' + '-instance',
             'instanceTemplate': '$(ref.' + instanceTemplateName + '.selfLink)',
-            'targetSize': context.properties['nodeCount'],
-            'autoHealingPolicies': [{
-                'initialDelaySec': 60
-            }]
+            'targetSize': context.properties['nodeCount']
         }
     }
 

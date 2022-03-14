@@ -3,8 +3,8 @@
 echo "Running node.sh"
 
 echo "Using the settings:"
-echo nodeCount \'$nodeCount\'
 echo adminPassword \'$adminPassword\'
+echo nodeCount \'$nodeCount\'
 echo graphDatabaseVersion \'$graphDatabaseVersion\'
 echo graphDataScienceVersion \'$graphDataScienceVersion\'
 echo graphDataScienceLicenseKey \'$graphDataScienceLicenseKey\'

@@ -21,27 +21,6 @@ def GenerateConfig(context):
 
     return config
 
-
-def GetRegionsList(context):
-    regions = []
-    availableRegions = [
-        'us-central1',
-        'us-west1',
-        'us-east1',
-        'us-east4',
-        'europe-west1',
-        'europe-west2',
-        'europe-west3',
-        'asia-southeast1',
-        'asia-east1',
-        'asia-northeast1',
-        'australia-southeast1'
-    ]
-    for region in availableRegions:
-        if context.properties[region]:
-            regions.append(region)
-    return regions
-
 def GeneratePassword():
     import random
     categories = ['ABCDEFGHJKLMNPQRSTUVWXYZ', 'abcdefghijkmnopqrstuvwxyz', '123456789', '*-+.']

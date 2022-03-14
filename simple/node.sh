@@ -3,15 +3,13 @@
 echo "Running node.sh"
 
 echo "Using the settings:"
+echo nodeCount \'$nodeCount\'
 echo adminPassword \'$adminPassword\'
 echo graphDatabaseVersion \'$graphDatabaseVersion\'
 echo graphDataScienceVersion \'$graphDataScienceVersion\'
 echo graphDataScienceLicenseKey \'$graphDataScienceLicenseKey\'
 echo bloomVersion \'$bloomVersion\'
 echo bloomLicenseKey \'$bloomLicenseKey\'
-
-nodePrivateDNS=`curl -s http://metadata/computeMetadata/v1beta1/instance/hostname`
-echo nodePrivateDNS: ${nodePrivateDNS}
 
 echo "Turning off firewalld"
 systemctl stop firewalld
@@ -36,21 +34,22 @@ yum -y install neo4j-enterprise-${graphDatabaseVersion}
 #echo $licenseKey > /etc/neo4j/license/neo4j.license
 
 echo Configuring network in neo4j.conf...
+
 sed -i 's/#dbms.default_listen_address=0.0.0.0/dbms.default_listen_address=0.0.0.0/g' /etc/neo4j/neo4j.conf
 nodeIndex=`curl -H Metadata:true "http://169.254.169.254/metadata/instance/compute?api-version=2017-03-01" \
   | jq ".name" \
   | sed 's/.*_//' \
   | sed 's/"//'`
-publicHostname='vm'$nodeIndex'.node-'$uniqueString'.'$location'.cloudapp.azure.com'
-sed -i s/#dbms.default_advertised_address=localhost/dbms.default_advertised_address=${publicHostname}/g /etc/neo4j/neo4j.conf
 
-#echo "Adding entries to /etc/hosts to route cluster traffic internally..."
-#echo "
-# Route cluster traffic internally
-#10.0.0.4 vm0.node-${uniqueString}.${location}.cloudapp.azure.com
-#10.0.0.5 vm1.node-${uniqueString}.${location}.cloudapp.azure.com
-#10.0.0.6 vm2.node-${uniqueString}.${location}.cloudapp.azure.com
-#" >> /etc/hosts
+# GCP doesn't have public DNS.  So, we're going to have to use the private IP.
+# This means clusters will not be routable from outside the GCP network.
+# Single nodes are ok.
+# It would be good to see if there's a better solution here.
+
+nodePrivateIP=`curl -s http://metadata/computeMetadata/v1beta1/instance/hostname`
+echo nodePrivateIP: ${nodePrivateIP}
+
+sed -i s/#dbms.default_advertised_address=localhost/dbms.default_advertised_address=${nodePrivateIP}/g /etc/neo4j/neo4j.conf
 
 if [[ $nodeCount == 1 ]]; then
   echo Running on a single node.

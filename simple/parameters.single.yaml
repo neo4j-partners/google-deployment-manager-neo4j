@@ -14,7 +14,7 @@ resources:
     nodeCount: 1
     diskSize: 20
     graphDatabaseVersion: 4.4.4
-    graphDataScienceVersion: None
+    graphDataScienceVersion: 1.8.0
     graphDataScienceLicenseKey: None
-    bloomVersion: None
+    bloomVersion: 2.1.0
     bloomLicenseKey: None

@@ -9,18 +9,55 @@ description:
   version: 4.4.4
   support:
     - title: Support
+      descriptionHtml: |-
+        Need a helping hand?
+        Reach out to our online community.
+      showSupportId: false
+      url: 'https://support.neo4j.com/hc/en-us'
   icon: '@media/logo.png'
   softwareGroups: []
-  tagline: 'The leading graph database.'
-  descriptionHtml: 'Neo4j Enterprise Edition description HTML goes here.'
-  eulaUrl: 'https://www.neo4j.com/'
-  documentations: []
-
+  tagline: Neo4j Enterprise Edition
+  descriptionHtml: >-
+    <p>Neo4j is an open-source, NoSQL, native graph database that provides an
+    ACID-compliant transactional backend for your applications. The Enterprise
+    Edition includes all that Community Edition has to offer, plus extra
+    enterprise requirements such as backups, clustering, and failover
+    abilities.</p><p>Neo4j is referred to as a native graph database because it
+    efficiently implements the property graph model down to the storage level.
+    This means that the data is stored exactly as you whiteboard it, and the
+    database uses pointers to navigate and traverse the graph. In contrast to
+    graph processing or in-memory libraries, Neo4j also provides full database
+    characteristics, including ACID transaction compliance, cluster support, and
+    runtime failover – making it suitable to use graphs for data in production
+    scenarios.</p>
+  eulaUrl: 'https://neo4j.com/subscriptions/#editions'
+  documentations:
+    - title: Register Neo4j Instance/Get a License
+      url: 'https://neo4j.com/lp/enterprise-cloud/?utm_content=google-marketplace'
+      description: License Registration
+      destinations:
+        - DESTINATION_SOLUTION_DETAILS
+        - DESTINATION_POST_DEPLOY
+      link_type: LINK_GENERAL
+    - title: Neo4j Documentation
+      url: 'https://neo4j.com/docs/'
+      description: All Neo4j Documentation
+      destinations:
+        - DESTINATION_SOLUTION_DETAILS
+        - DESTINATION_POST_DEPLOY
+      link_type: LINK_GENERAL
+    - title: Getting started in GCP
+      url: 'https://neo4j.com/developer/neo4j-google-cloud-launcher/'
+      description: Getting started guide
+      destinations:
+        - DESTINATION_SOLUTION_DETAILS
+        - DESTINATION_POST_DEPLOY
+      link_type: LINK_GENERAL
+  url: 'https://neo4j.com/lp/enterprise-cloud/?utm_content=google-marketplace'
 input:
   sections:
     - name: neo4j
       title: Neo4j
-
   properties:
     - name: region
       title: Region
@@ -52,6 +89,5 @@ input:
     - name: bloomLicenseKey
       title: Bloom License Key
       section: neo4j
-
 runtime:
   deployingMessage: Deployment can take several minutes to complete.

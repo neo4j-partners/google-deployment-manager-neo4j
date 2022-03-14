@@ -19,9 +19,6 @@ properties:
   nodeType:
     type: string
     default: n1-standard-4
-    x-googleProperty:
-      type: GCE_MACHINE_TYPE
-      zoneProperty: us-central1-f
   diskSize:
     type: integer
     default: 20

@@ -1,17 +1,10 @@
-import naming
-
 def GenerateConfig(context):
     config={}
     config['resources'] = []
     config['outputs'] = []
 
-    adminUsername='neo4j'
     adminPassword = GeneratePassword()
 
-    config['outputs'].append({
-        'name': 'adminUsername',
-        'value': adminUsername
-    })
     config['outputs'].append({
         'name': 'adminPassword',
         'value': adminPassword
@@ -21,7 +14,6 @@ def GenerateConfig(context):
         'name': 'deployment',
         'type': 'deployment.py',
         'properties': {
-            'adminUsername': adminUsername,
             'adminPassword': adminPassword
         }
     }

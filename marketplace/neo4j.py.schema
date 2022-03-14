@@ -7,9 +7,6 @@ info:
   version: 1.0
   title: Neo4j
 
-required:
-  - adminPassword
-
 properties:
   us-central1:
     type: boolean

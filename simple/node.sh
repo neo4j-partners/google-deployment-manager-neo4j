@@ -3,13 +3,15 @@
 echo "Running node.sh"
 
 echo "Using the settings:"
-echo adminUsername \'$adminUsername\'
 echo adminPassword \'$adminPassword\'
 echo graphDatabaseVersion \'$graphDatabaseVersion\'
 echo graphDataScienceVersion \'$graphDataScienceVersion\'
 echo graphDataScienceLicenseKey \'$graphDataScienceLicenseKey\'
 echo bloomVersion \'$bloomVersion\'
 echo bloomLicenseKey \'$bloomLicenseKey\'
+
+nodePrivateDNS=`curl -s http://metadata/computeMetadata/v1beta1/instance/hostname`
+echo nodePrivateDNS: ${nodePrivateDNS}
 
 echo "Turning off firewalld"
 systemctl stop firewalld

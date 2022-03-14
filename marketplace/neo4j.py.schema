@@ -8,7 +8,7 @@ info:
   title: Neo4j
 
 required:
-  - nodeCount
+  - adminPassword
 
 properties:
   us-central1:
@@ -61,7 +61,7 @@ properties:
     type: integer
     default: 3
     minimum: 1
-    maximum: 100
+    maximum: 3
   nodeType:
     type: string
     default: n1-standard-4
@@ -70,9 +70,24 @@ properties:
       zoneProperty: defaultZone
   diskSize:
     type: integer
-    default: 10
+    default: 20
   adminPassword:
     type: string
+  graphDatabaseVersion:
+    type: string
+    default: '4.4.4'
+  graphDataScienceVersion:
+    type: string
+    default: '1.8.0'
+  graphDataScienceLicenseKey:
+    type: string
+    default: 'None'
+  bloomVersion:
+    type: string
+    default: '2.1.0'
+  bloomLicenseKey:
+    type: string
+    default: 'None'
 
 outputs:
   deployment:

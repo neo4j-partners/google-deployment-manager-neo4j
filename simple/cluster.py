@@ -37,8 +37,7 @@ def GenerateConfig(context):
                         'https://www.googleapis.com/auth/cloud.useraccounts.readonly',
                         'https://www.googleapis.com/auth/devstorage.read_only',
                         'https://www.googleapis.com/auth/logging.write',
-                        'https://www.googleapis.com/auth/monitoring.write',
-                        'https://www.googleapis.com/auth/cloudruntimeconfig'
+                        'https://www.googleapis.com/auth/monitoring.write'
                     ]
                 }]
             }
@@ -64,7 +63,6 @@ def GenerateConfig(context):
 
 def GenerateStartupScript(context):
     script = '#!/usr/bin/env bash\n\n'
-    #script += 'DEPLOYMENT="' + context.env['deployment'] + '"\n'
  
     script += 'nodeCount="' + str(context.properties['nodeCount']) + '"\n'
     script += 'adminPassword="' + context.properties['adminPassword'] + '"\n'

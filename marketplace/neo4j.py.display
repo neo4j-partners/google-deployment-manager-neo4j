@@ -73,6 +73,21 @@ input:
     - name: adminPassword
       title: Admin Password
       section: neo4j
+    - name: graphDatabaseVersion
+      title: Graph Database Version
+      section: neo4j
+    - name: graphDataScienceVersion
+      title: Graph Data Science Version
+      section: neo4j
+    - name: graphDataScienceLicenseKey
+      title: Graph Data Science License Key
+      section: neo4j
+    - name: bloomVersion
+      title: Bloom Version
+      section: neo4j
+    - name: bloomLicenseKey
+      title: Bloom License Key
+      section: neo4j
 
 runtime:
   deployingMessage: Deployment can take several minutes to complete.

@@ -64,10 +64,15 @@ def GenerateConfig(context):
 
 def GenerateStartupScript(context):
     script = '#!/usr/bin/env bash\n\n'
-    script += 'DEPLOYMENT="' + context.env['deployment'] + '"\n'
+    #script += 'DEPLOYMENT="' + context.env['deployment'] + '"\n'
 
     script += 'adminUsername="' + context.properties['adminUsername'] + '"\n'
     script += 'adminPassword="' + context.properties['adminPassword'] + '"\n'
+    script += 'graphDatabaseVersion="' + context.properties['graphDatabaseVersion'] + '"\n'
+    script += 'graphDataScienceVersion="' + context.properties['graphDataScienceVersion'] + '"\n'
+    script += 'graphDataScienceLicenseKey="' + context.properties['graphDataScienceLicenseKey'] + '"\n'
+    script += 'bloomVersion="' + context.properties['bloomVersion'] + '"\n'
+    script += 'bloomLicenseKey="' + context.properties['bloomLicenseKey'] + '"\n'
 
     script+= context.imports['node.sh']
 

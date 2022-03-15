@@ -2,6 +2,16 @@ def GenerateConfig(context):
     config={}
     config['resources'] = []
 
+    runtimeconfigName = context.env['deployment'] + '-runtimeconfig'
+    runtimeconfig = {
+        'name': runtimeconfigName,
+        'type': 'runtimeconfig.v1.config',
+        'properties': {
+            'config': runtimeconfigName
+        }
+    }
+    config['resources'].append(runtimeconfig)
+
     clusterJSON = {
         'name': context.env['deployment'] + '-cluster',
         'type': 'cluster.py',

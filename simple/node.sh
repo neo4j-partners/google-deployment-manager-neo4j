@@ -46,9 +46,8 @@ nodeIndex=`curl -H Metadata:true "http://169.254.169.254/metadata/instance/compu
 # Single nodes are ok.
 # It would be good to see if there's a better solution here.
 
-nodePrivateIP=`curl -s http://metadata/computeMetadata/v1beta1/instance/hostname`
+nodePrivateIP=`curl "http://metadata.google.internal/computeMetadata/v1/instance/hostname" -H "Metadata-Flavor: Google"`
 echo nodePrivateIP: ${nodePrivateIP}
-
 sed -i s/#dbms.default_advertised_address=localhost/dbms.default_advertised_address=${nodePrivateIP}/g /etc/neo4j/neo4j.conf
 
 if [[ $nodeCount == 1 ]]; then

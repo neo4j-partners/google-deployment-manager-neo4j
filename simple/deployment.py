@@ -5,7 +5,7 @@ def GenerateConfig(context):
     runtimeconfigName = context.env['deployment'] + '-runtimeconfig'
     runtimeconfig = {
         'name': runtimeconfigName,
-        'type': 'runtimeconfig.v1.config',
+        'type': 'runtimeconfig.v1beta1.config',
         'properties': {
             'config': runtimeconfigName
         }

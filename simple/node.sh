@@ -36,19 +36,19 @@ yum -y install neo4j-enterprise-${graphDatabaseVersion}
 echo Configuring network in neo4j.conf...
 
 sed -i 's/#dbms.default_listen_address=0.0.0.0/dbms.default_listen_address=0.0.0.0/g' /etc/neo4j/neo4j.conf
-nodeIndex=`curl -H Metadata:true "http://169.254.169.254/metadata/instance/compute?api-version=2017-03-01" \
-  | jq ".name" \
-  | sed 's/.*_//' \
-  | sed 's/"//'`
 
 # GCP doesn't have public DNS.  So, we're going to have to use the private IP.
 # This means clusters will not be routable from outside the GCP network.
 # Single nodes are ok.
 # It would be good to see if there's a better solution here.
 
-nodePrivateIP=`curl "http://metadata.google.internal/computeMetadata/v1/instance/hostname" -H "Metadata-Flavor: Google"`
-echo nodePrivateIP: ${nodePrivateIP}
-sed -i s/#dbms.default_advertised_address=localhost/dbms.default_advertised_address=${nodePrivateIP}/g /etc/neo4j/neo4j.conf
+nodePrivateDNS=`curl "http://metadata.google.internal/computeMetadata/v1/instance/hostname" -H "Metadata-Flavor: Google"`
+echo nodePrivateDNS: ${nodePrivateDNS}
+sed -i s/#dbms.default_advertised_address=localhost/dbms.default_advertised_address=${nodePrivateDNS}/g /etc/neo4j/neo4j.conf
+
+#put nodePrivateDNS in run config
+# while len runconfig < num of nodes
+#   wait
 
 if [[ $nodeCount == 1 ]]; then
   echo Running on a single node.

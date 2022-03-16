@@ -63,7 +63,9 @@ def GenerateConfig(context):
 
 def GenerateStartupScript(context):
     script = '#!/usr/bin/env bash\n\n'
- 
+
+    script+= 'echo "' + context.imports['parseCoreMembers.py'] + '">parseCoreMembers.py' + '\n'
+
     script += 'deployment="' + context.env['deployment'] + '"\n'
     script += 'adminPassword="' + context.properties['adminPassword'] + '"\n'
     script += 'nodeCount="' + str(context.properties['nodeCount']) + '"\n'

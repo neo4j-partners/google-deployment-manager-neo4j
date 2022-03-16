@@ -7,7 +7,7 @@ import json
 deployment=sys.argv[1]
 #print('Deployment is ' + deployment)
 
-blob=subprocess.check_output('gcloud compute instances list --format="json"', shell=True)
+blob=subprocess.check_output('gcloud compute instances list --format=json', shell=True)
 instances=json.loads(blob)
 
 #print(json.dumps(j, indent=4, sort_keys=True))

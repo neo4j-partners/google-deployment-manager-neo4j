@@ -28,7 +28,7 @@ echo Installing Graph Database...
 export NEO4J_ACCEPT_LICENSE_AGREEMENT=yes
 yum -y install neo4j-enterprise-${graphDatabaseVersion}
 
-### This doesn't quite work.  There are actually two keys, one for GDS and one for bloom
+### Todo - fix license logic
 #echo Writing neo4j license key file...
 #mkdir /etc/neo4j/license
 #echo $licenseKey > /etc/neo4j/license/neo4j.license
@@ -45,7 +45,7 @@ if [[ $nodeCount == 1 ]]; then
   echo Running on a single node.
 else
   echo Running on multiple nodes.  Configuring membership in neo4j.conf...
-  ### Todo - grab the private IPs from the IGM
+  ### Todo - grab the public IPs for each node in the IGM
   coreMembers='10.0.0.2X,10.0.0.3X,10.0.0.4X'
   coreMembers=$(echo $coreMembers | sed 's/X/:5000/g')
   sed -i s/#causal_clustering.initial_discovery_members=localhost:5000,localhost:5001,localhost:5002/causal_clustering.initial_discovery_members=${coreMembers}/g /etc/neo4j/neo4j.conf
@@ -67,6 +67,7 @@ echo root@localhost.localdomain
 }
 answers | /usr/bin/openssl req -newkey rsa:2048 -keyout private.key -nodes -x509 -days 365 -out public.crt
 
+### Todo - turn on additional services
 #for service in bolt https cluster backup; do
 for service in https; do
   sed -i s/#dbms.ssl.policy.${service}/dbms.ssl.policy.${service}/g /etc/neo4j/neo4j.conf

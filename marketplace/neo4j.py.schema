@@ -13,7 +13,7 @@ properties:
     default: us-east1
   nodeCount:
     type: integer
-    default: 3
+    default: 1
     minimum: 1
     maximum: 3
   nodeType:

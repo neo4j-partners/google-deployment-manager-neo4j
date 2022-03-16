@@ -69,7 +69,7 @@ input:
       title: Node Type
       section: neo4j
     - name: diskSize
-      title: pd-ssd disk size in GB
+      title: Disk Size in GB
       section: neo4j
     - name: adminPassword
       title: Admin Password

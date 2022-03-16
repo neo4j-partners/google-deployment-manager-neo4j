@@ -12,6 +12,7 @@ cp test_config.yaml tmp
 cp ../simple/deployment.py tmp
 cp ../simple/cluster.py tmp
 cp ../simple/node.sh tmp
+cp ../simple/parseCoreMembers.py tmp
 
 cp -r resources tmp
 

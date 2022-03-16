@@ -37,38 +37,9 @@ echo Configuring network in neo4j.conf...
 
 sed -i 's/#dbms.default_listen_address=0.0.0.0/dbms.default_listen_address=0.0.0.0/g' /etc/neo4j/neo4j.conf
 
-# GCP doesn't have public DNS.  So, we're going to have to use the private IP.
-# This means clusters will not be routable from outside the GCP network.
-# Single nodes are ok.
-# It would be good to see if there's a better solution here.
-
-#readonly ACCESS_TOKEN=`curl "http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/token" -H "Metadata-Flavor: Google" | awk -F\" '{ print $4 }'`
-# not sure why this isn't printing anything.  Seems to run.
-#echo ACCESS_TOKEN: ${ACCESS_TOKEN}
-
-# doesn't work
-#readonly CONFIG=`curl "http://metadata.google.internal/computeMetadata/v1/project/attributes/ben6-runtimeconfig" -H "Metadata-Flavor: Google"`
-#echo CONFIG: ${CONFIG}
-
-readonly PROJECT_ID=`curl "http://metadata.google.internal/computeMetadata/v1/project/project-id" -H "Metadata-Flavor: Google"`
-echo PROJECT_ID: ${PROJECT_ID}
-
-readonly NODE_PRIVATE_DNS=`curl "http://metadata.google.internal/computeMetadata/v1/instance/hostname" -H "Metadata-Flavor: Google"`
-echo NODE_PRIVATE_DNS: ${NODE_PRIVATE_DNS}
-
-sed -i s/#dbms.default_advertised_address=localhost/dbms.default_advertised_address=${NODE_PRIVATE_DNS}/g /etc/neo4j/neo4j.conf
-
-# write nodePrivateDNS to runtimeconfig
-curl -s -k -X POST \
-    -H "Content-Type: application/json" \
-    -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-    -H "X-GFE-SSL: yes" \
-    -d "{name: \"projects/${PROJECT_ID}/configs/${CONFIG}/variables/NODE_PRIVATE_DNS\", text: \"${NODE_PRIVATE_DNS}\" }" \
-    https://runtimeconfig.googleapis.com/v1beta1/projects/${PROJECT_ID}/configs/${CONFIG}/variables
-
-#put nodePrivateDNS in run config
-# while len runconfig < num of nodes
-#   wait
+NODE_EXTERNAL_IP=`curl -H "Metadata-Flavor: Google" http://metadata/computeMetadata/v1/instance/network-interfaces/0/access-configs/0/external-ip`
+echo NODE_EXTERNAL_IP: ${NODE_EXTERNAL_IP}
+sed -i s/#dbms.default_advertised_address=localhost/dbms.default_advertised_address=${NODE_EXTERNAL_IP}/g /etc/neo4j/neo4j.conf
 
 if [[ $nodeCount == 1 ]]; then
   echo Running on a single node.

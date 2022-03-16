@@ -46,6 +46,14 @@ nodePrivateDNS=`curl "http://metadata.google.internal/computeMetadata/v1/instanc
 echo nodePrivateDNS: ${nodePrivateDNS}
 sed -i s/#dbms.default_advertised_address=localhost/dbms.default_advertised_address=${nodePrivateDNS}/g /etc/neo4j/neo4j.conf
 
+# write nodePrivateDNS to runtimeconfig
+curl -s -k -X POST \
+    -H "Content-Type: application/json" \
+    -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+    -H "X-GFE-SSL: yes" \
+    -d "{name: \"projects/${PROJECT_ID}/configs/${CONFIG}/variables/${nodePrivateDNS}\", text: \"${nodePrivateDNS}\" }" \
+    https://runtimeconfig.googleapis.com/v1beta1/projects/${PROJECT_ID}/configs/${CONFIG}/variables
+
 #put nodePrivateDNS in run config
 # while len runconfig < num of nodes
 #   wait

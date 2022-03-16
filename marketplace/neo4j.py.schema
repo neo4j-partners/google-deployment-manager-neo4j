@@ -2,6 +2,7 @@ imports:
   - path: deployment.py
   - path: cluster.py
   - path: node.sh
+  - path: parseCoreMembers.py
 
 info:
   version: 4.4.4

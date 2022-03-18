@@ -64,18 +64,26 @@ echo root@localhost.localdomain
 }
 answers | /usr/bin/openssl req -newkey rsa:2048 -keyout private.key -nodes -x509 -days 365 -out public.crt
 
-### Todo - turn on additional services
-#for service in bolt https cluster backup; do
-for service in https; do
-  sed -i s/#dbms.ssl.policy.${service}/dbms.ssl.policy.${service}/g /etc/neo4j/neo4j.conf
-  mkdir -p /var/lib/neo4j/certificates/${service}/trusted
-  mkdir -p /var/lib/neo4j/certificates/${service}/revoked
-  cp private.key /var/lib/neo4j/certificates/${service}
-  cp public.crt /var/lib/neo4j/certificates/${service}
-done
+sed -i s/#dbms.ssl.policy.https/dbms.ssl.policy.https/g /etc/neo4j/neo4j.conf
+mkdir -p /var/lib/neo4j/certificates/https/trusted
+mkdir -p /var/lib/neo4j/certificates/https/revoked
+cp private.key /var/lib/neo4j/certificates/https
+cp public.crt /var/lib/neo4j/certificates/https
+
+sed -i s/#dbms.ssl.policy.bolt/dbms.ssl.policy.bolt/g /etc/neo4j/neo4j.conf
+mkdir -p /var/lib/neo4j/certificates/bolt/trusted
+mkdir -p /var/lib/neo4j/certificates/bolt/revoked
+cp private.key /var/lib/neo4j/certificates/bolt
+cp public.crt /var/lib/neo4j/certificates/bolt
 
 chown -R neo4j:neo4j /var/lib/neo4j/certificates
 chmod -R 755 /var/lib/neo4j/certificates
+
+# Logging
+sed -i s/#dbms.logs.http.enabled/dbms.logs.http.enabled/g /etc/neo4j/neo4j.conf
+sed -i s/#dbms.logs.query.enabled/dbms.logs.query.enabled/g /etc/neo4j/neo4j.conf
+sed -i s/#dbms.logs.security.enabled/dbms.logs.security.enabled/g /etc/neo4j/neo4j.conf
+sed -i s/#dbms.logs.debug.level/dbms.logs.debug.level/g /etc/neo4j/neo4j.conf
 
 mkdir -p /etc/neo4j/downloads
 
@@ -101,20 +109,24 @@ sed -i '$a ' /etc/neo4j/neo4j.conf
 sed -i '$a # Bloom and EDS license files' /etc/neo4j/neo4j.conf
 
 mkdir -p /etc/neo4j/licenses
-echo Writing Bloom license key file...
-# bloom license
-# https://neo4j.com/docs/bloom-user-guide/current/bloom-installation/installation-activation/
-echo $bloomLicenseKey > /etc/neo4j/licenses/neo4j-bloom.license
-echo Configuring Bloom license in neo4j.conf...
-sed -i '$a neo4j.bloom.license_file=/etc/neo4j/licenses/neo4j-bloom.license' /etc/neo4j/neo4j.conf
 
-echo Writing GDS license key file...
-echo $graphDataScienceLicenseKey > /etc/neo4j/licenses/neo4j-gds.license
+if [[ $bloomLicenseKey != None ]]; then
+  echo Writing Bloom license key file...
+  # bloom license
+  # https://neo4j.com/docs/bloom-user-guide/current/bloom-installation/installation-activation/
+  echo $bloomLicenseKey > /etc/neo4j/licenses/neo4j-bloom.license
+  echo Configuring Bloom license in neo4j.conf...
+  sed -i '$a neo4j.bloom.license_file=/etc/neo4j/licenses/neo4j-bloom.license' /etc/neo4j/neo4j.conf
+fi
 
-echo Configuring GDS license in neo4j.conf...
-# gds license
-# https://neo4j.com/docs/graph-data-science/current/installation/installation-enterprise-edition/
-sed -i '$a gds.enterprise.license_file=/etc/neo4j/licenses/neo4j-gds.license' /etc/neo4j/neo4j.conf
+if [[ $graphDataScienceLicenseKey != None ]]; then
+  echo Writing GDS license key file...
+  echo $graphDataScienceLicenseKey > /etc/neo4j/licenses/neo4j-gds.license
+  echo Configuring GDS license in neo4j.conf...
+  # gds license
+  # https://neo4j.com/docs/graph-data-science/current/installation/installation-enterprise-edition/
+  sed -i '$a gds.enterprise.license_file=/etc/neo4j/licenses/neo4j-gds.license' /etc/neo4j/neo4j.conf
+fi
 
 sed -i '$a ' /etc/neo4j/neo4j.conf
 sed -i '$a # Bloom and EDS roles and permissions (updated in place)' /etc/neo4j/neo4j.conf

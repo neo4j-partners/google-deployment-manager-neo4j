@@ -29,10 +29,8 @@ echo Installing Graph Database...
 export NEO4J_ACCEPT_LICENSE_AGREEMENT=yes
 yum -y install neo4j-enterprise-${graphDatabaseVersion}
 
-### Todo - fix license logic
-#echo Writing neo4j license key file...
-#mkdir /etc/neo4j/license
-#echo $licenseKey > /etc/neo4j/license/neo4j.license
+echo Installing unzip...
+yum -y install unzip
 
 echo Configuring network in neo4j.conf...
 
@@ -79,6 +77,8 @@ done
 chown -R neo4j:neo4j /var/lib/neo4j/certificates
 chmod -R 755 /var/lib/neo4j/certificates
 
+mkdir -p /etc/neo4j/downloads
+
 if [[ $graphDataScienceVersion != None ]]; then
   echo Installing Graph Data Science...
   curl https://s3-eu-west-1.amazonaws.com/com.neo4j.graphalgorithms.dist/graph-data-science/neo4j-graph-data-science-${graphDataScienceVersion}-standalone.zip -o neo4j-graph-data-science-${graphDataScienceVersion}-standalone.zip
@@ -96,6 +96,28 @@ fi
 echo Configuring Graph Data Science and Bloom in neo4j.conf...
 sed -i s/#dbms.security.procedures.unrestricted=my.extensions.example,my.procedures.*/dbms.security.procedures.unrestricted=gds.*,bloom.*/g /etc/neo4j/neo4j.conf
 sed -i s/#dbms.security.procedures.allowlist=apoc.coll.*,apoc.load.*,gds.*/dbms.security.procedures.allowlist=apoc.coll.*,apoc.load.*,gds.*,bloom.*/g /etc/neo4j/neo4j.conf
+
+sed -i '$a ' /etc/neo4j/neo4j.conf
+sed -i '$a # Bloom and EDS license files' /etc/neo4j/neo4j.conf
+
+mkdir -p /etc/neo4j/licenses
+echo Writing Bloom license key file...
+# bloom license
+# https://neo4j.com/docs/bloom-user-guide/current/bloom-installation/installation-activation/
+echo $bloomLicenseKey > /etc/neo4j/licenses/neo4j-bloom.license
+echo Configuring Bloom license in neo4j.conf...
+sed -i '$a neo4j.bloom.license_file=/etc/neo4j/licenses/neo4j-bloom.license' /etc/neo4j/neo4j.conf
+
+echo Writing GDS license key file...
+echo $graphDataScienceLicenseKey > /etc/neo4j/licenses/neo4j-gds.license
+
+echo Configuring GDS license in neo4j.conf...
+# gds license
+# https://neo4j.com/docs/graph-data-science/current/installation/installation-enterprise-edition/
+sed -i '$a gds.enterprise.license_file=/etc/neo4j/licenses/neo4j-gds.license' /etc/neo4j/neo4j.conf
+
+sed -i '$a ' /etc/neo4j/neo4j.conf
+sed -i '$a # Bloom and EDS roles and permissions (updated in place)' /etc/neo4j/neo4j.conf
 
 echo Starting Neo4j...
 service neo4j start

@@ -16,5 +16,5 @@ resources:
     graphDatabaseVersion: 4.4.4
     graphDataScienceVersion: 1.8.0
     graphDataScienceLicenseKey: None
-    bloomVersion: 2.1.0
+    bloomVersion: 2.1.1
     bloomLicenseKey: None

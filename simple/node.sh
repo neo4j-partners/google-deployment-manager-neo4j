@@ -11,6 +11,7 @@ echo graphDataScienceVersion \'$graphDataScienceVersion\'
 echo graphDataScienceLicenseKey \'$graphDataScienceLicenseKey\'
 echo bloomVersion \'$bloomVersion\'
 echo bloomLicenseKey \'$bloomLicenseKey\'
+echo apocVersion \'$apocVersion\'
 
 echo "Turning off firewalld"
 systemctl stop firewalld
@@ -104,6 +105,12 @@ fi
 echo Configuring Graph Data Science and Bloom in neo4j.conf...
 sed -i s/#dbms.security.procedures.unrestricted=my.extensions.example,my.procedures.*/dbms.security.procedures.unrestricted=gds.*,bloom.*/g /etc/neo4j/neo4j.conf
 sed -i s/#dbms.security.procedures.allowlist=apoc.coll.*,apoc.load.*,gds.*/dbms.security.procedures.allowlist=apoc.coll.*,apoc.load.*,gds.*,bloom.*/g /etc/neo4j/neo4j.conf
+
+if [[ $apocVersion != None ]]; then
+  echo Installing APOC...
+  curl -L https://github.com/neo4j-contrib/neo4j-apoc-procedures/releases/download/${apocVersion}/apoc-${apocVersion}-all.jar -o apoc-${apocVersion}-all.jar
+  mv apoc-${apocVersion}-all.jar /var/lib/neo4j/plugins
+fi
 
 sed -i '$a ' /etc/neo4j/neo4j.conf
 sed -i '$a # Bloom and EDS license files' /etc/neo4j/neo4j.conf

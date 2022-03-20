@@ -40,6 +40,9 @@ properties:
   bloomLicenseKey:
     type: string
     default: 'None'
+  apocVersion:
+    type: string
+    default: '4.4.0.3'
 
 outputs:
   deployment:

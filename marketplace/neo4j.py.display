@@ -89,5 +89,8 @@ input:
     - name: bloomLicenseKey
       title: Bloom License Key
       section: neo4j
+    - name: apocVersion
+      title: APOC Version
+      section: neo4j
 runtime:
   deployingMessage: Deployment can take several minutes to complete.

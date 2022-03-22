@@ -103,6 +103,7 @@ if [[ $bloomVersion != None ]]; then
 fi
 
 echo Configuring Graph Data Science and Bloom in neo4j.conf...
+sed -i s~#dbms.unmanaged_extension_classes=org.neo4j.examples.server.unmanaged=/examples/unmanaged~dbms.unmanaged_extension_classes=com.neo4j.bloom.server=/bloom,semantics.extension=/rdf~g /etc/neo4j/neo4j.conf
 sed -i s/#dbms.security.procedures.unrestricted=my.extensions.example,my.procedures.*/dbms.security.procedures.unrestricted=gds.*,bloom.*/g /etc/neo4j/neo4j.conf
 sed -i s/#dbms.security.procedures.allowlist=apoc.coll.*,apoc.load.*,gds.*/dbms.security.procedures.allowlist=apoc.coll.*,apoc.load.*,gds.*,bloom.*/g /etc/neo4j/neo4j.conf
 
@@ -137,6 +138,9 @@ fi
 
 sed -i '$a ' /etc/neo4j/neo4j.conf
 sed -i '$a # Bloom and EDS roles and permissions (updated in place)' /etc/neo4j/neo4j.conf
+
+# Bloom http whitelist
+sed -i '$a dbms.security.http_auth_allowlist=/,/browser.*,/bloom.*' /etc/neo4j/neo4j.conf
 
 echo Starting Neo4j...
 service neo4j start

@@ -144,7 +144,7 @@ sed -i '$a # Bloom and EDS roles and permissions (updated in place)' /etc/neo4j/
 # Bloom http whitelist
 sed -i '$a dbms.security.http_auth_allowlist=/,/browser.*,/bloom.*' /etc/neo4j/neo4j.conf
 
-# Enable security (not editing in place since baseline could change in the future
+# Enable security (not editing in place since baseline could change in the future)
 sed -i '$a dbms.security.procedures.allowlist=apoc.*,gds.*,bloom.*' /etc/neo4j/neo4j.conf
 
 

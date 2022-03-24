@@ -3,3 +3,4 @@ marketplace/archive.zip
 
 # A custom yaml file to ignore so it can have keys in it
 parameters.custom.yaml
+parameters.custom2.yaml

@@ -5,17 +5,17 @@ imports:
   - path: parseCoreMembers.py
 
 resources:
-- name: deployment
-  type: deployment.py
-  properties:
-    region: us-east1
-    adminPassword: foo123
-    nodeType: n2-standard-8
-    nodeCount: 1
-    diskSize: 20
-    graphDatabaseVersion: 4.4.4
-    graphDataScienceVersion: 1.8.0
-    graphDataScienceLicenseKey: None
-    bloomVersion: 2.1.1
-    bloomLicenseKey: None
-    apocVersion: 4.4.0.3
+  - name: deployment
+    type: deployment.py
+    properties:
+      region: us-east1
+      adminPassword: foo123
+      nodeType: n2-standard-8
+      nodeCount: 1
+      diskSize: 20
+      graphDatabaseVersion: 4.4.4
+      graphDataScienceVersion: 2.0.0
+      graphDataScienceLicenseKey: None
+      bloomVersion: 2.1.1
+      bloomLicenseKey: None
+      apocVersion: 4.4.0.3

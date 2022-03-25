@@ -54,6 +54,9 @@ echo Turning on SSL...
 sed -i 's/dbms.connector.https.enabled=false/dbms.connector.https.enabled=true/g' /etc/neo4j/neo4j.conf
 #sed -i 's/#dbms.connector.bolt.tls_level=DISABLED/dbms.connector.bolt.tls_level=OPTIONAL/g' /etc/neo4j/neo4j.conf
 
+# Note: in Neo v.4.x self-signed certs are not supported for browser tools (including desktop).
+# So use http (not https) and bolt not bolt+s for these
+# From coding environments you can use the bolt+ssc protocol
 answers() {
 echo --
 echo SomeState
@@ -90,8 +93,8 @@ mkdir -p /etc/neo4j/downloads
 
 if [[ $graphDataScienceVersion != None ]]; then
   echo Installing Graph Data Science...
-  curl https://s3-eu-west-1.amazonaws.com/com.neo4j.graphalgorithms.dist/graph-data-science/neo4j-graph-data-science-${graphDataScienceVersion}-standalone.zip -o neo4j-graph-data-science-${graphDataScienceVersion}-standalone.zip
-  unzip neo4j-graph-data-science-${graphDataScienceVersion}-standalone.zip
+  curl https://graphdatascience.ninja/neo4j-graph-data-science-${graphDataScienceVersion}.zip -o neo4j-graph-data-science-${graphDataScienceVersion}.zip
+  unzip neo4j-graph-data-science-${graphDataScienceVersion}.zip
   mv neo4j-graph-data-science-${graphDataScienceVersion}.jar /var/lib/neo4j/plugins
 fi
 
@@ -105,7 +108,6 @@ fi
 echo Configuring Graph Data Science and Bloom in neo4j.conf...
 sed -i s~#dbms.unmanaged_extension_classes=org.neo4j.examples.server.unmanaged=/examples/unmanaged~dbms.unmanaged_extension_classes=com.neo4j.bloom.server=/bloom,semantics.extension=/rdf~g /etc/neo4j/neo4j.conf
 sed -i s/#dbms.security.procedures.unrestricted=my.extensions.example,my.procedures.*/dbms.security.procedures.unrestricted=gds.*,bloom.*/g /etc/neo4j/neo4j.conf
-sed -i s/#dbms.security.procedures.allowlist=apoc.coll.*,apoc.load.*,gds.*/dbms.security.procedures.allowlist=apoc.coll.*,apoc.load.*,gds.*,bloom.*/g /etc/neo4j/neo4j.conf
 
 if [[ $apocVersion != None ]]; then
   echo Installing APOC...
@@ -141,6 +143,10 @@ sed -i '$a # Bloom and EDS roles and permissions (updated in place)' /etc/neo4j/
 
 # Bloom http whitelist
 sed -i '$a dbms.security.http_auth_allowlist=/,/browser.*,/bloom.*' /etc/neo4j/neo4j.conf
+
+# Enable security (not editing in place since baseline could change in the future)
+sed -i '$a dbms.security.procedures.allowlist=apoc.*,gds.*,bloom.*' /etc/neo4j/neo4j.conf
+
 
 echo Starting Neo4j...
 service neo4j start

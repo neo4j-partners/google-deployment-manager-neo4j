@@ -30,13 +30,13 @@ properties:
     default: '4.4.4'
   graphDataScienceVersion:
     type: string
-    default: '1.8.0'
+    default: '2.0.0'
   graphDataScienceLicenseKey:
     type: string
     default: 'None'
   bloomVersion:
     type: string
-    default: '2.1.0'
+    default: '2.1.1'
   bloomLicenseKey:
     type: string
     default: 'None'

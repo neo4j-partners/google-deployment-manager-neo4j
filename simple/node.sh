@@ -147,7 +147,6 @@ sed -i '$a dbms.security.http_auth_allowlist=/,/browser.*,/bloom.*' /etc/neo4j/n
 # Enable security (not editing in place since baseline could change in the future)
 sed -i '$a dbms.security.procedures.allowlist=apoc.*,gds.*,bloom.*' /etc/neo4j/neo4j.conf
 
-
 echo Starting Neo4j...
 service neo4j start
 neo4j-admin set-initial-password ${adminPassword}

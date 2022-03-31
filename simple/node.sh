@@ -83,13 +83,11 @@ cp public.crt /var/lib/neo4j/certificates/bolt
 chown -R neo4j:neo4j /var/lib/neo4j/certificates
 chmod -R 755 /var/lib/neo4j/certificates
 
-# Logging
+echo Configuring logging...
 sed -i s/#dbms.logs.http.enabled/dbms.logs.http.enabled/g /etc/neo4j/neo4j.conf
 sed -i s/#dbms.logs.query.enabled/dbms.logs.query.enabled/g /etc/neo4j/neo4j.conf
 sed -i s/#dbms.logs.security.enabled/dbms.logs.security.enabled/g /etc/neo4j/neo4j.conf
 sed -i s/#dbms.logs.debug.level/dbms.logs.debug.level/g /etc/neo4j/neo4j.conf
-
-mkdir -p /etc/neo4j/downloads
 
 if [[ $graphDataScienceVersion != None ]]; then
   echo Installing Graph Data Science...

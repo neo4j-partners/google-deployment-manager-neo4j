@@ -5,7 +5,7 @@ imports:
   - path: parseCoreMembers.py
 
 info:
-  version: 4.4.4
+  version: 4.4.5
   title: Neo4j
 
 properties:
@@ -27,22 +27,19 @@ properties:
     type: string
   graphDatabaseVersion:
     type: string
-    default: '4.4.4'
-  graphDataScienceVersion:
+    default: '4.4.5'
+  installGraphDataScience:
     type: string
-    default: '2.0.0'
+    default: 'Yes'
   graphDataScienceLicenseKey:
     type: string
     default: 'None'
-  bloomVersion:
+  installlBloom:
     type: string
-    default: '2.1.1'
+    default: 'Yes'
   bloomLicenseKey:
     type: string
     default: 'None'
-  apocVersion:
-    type: string
-    default: '4.4.0.3'
 
 outputs:
   deployment:

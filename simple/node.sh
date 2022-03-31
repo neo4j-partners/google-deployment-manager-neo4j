@@ -68,10 +68,20 @@ echo root@localhost.localdomain
 }
 answers | /usr/bin/openssl req -newkey rsa:2048 -keyout private.key -nodes -x509 -days 365 -out public.crt
 
+# Logging
+sed -i s/#dbms.logs.http.enabled/dbms.logs.http.enabled/g /etc/neo4j/neo4j.conf
+sed -i s/#dbms.logs.query.enabled/dbms.logs.query.enabled/g /etc/neo4j/neo4j.conf
+sed -i s/#dbms.logs.security.enabled/dbms.logs.security.enabled/g /etc/neo4j/neo4j.conf
+sed -i s/#dbms.logs.debug.level/dbms.logs.debug.level/g /etc/neo4j/neo4j.conf
+
+echo Turning on SSL...
+sed -i 's/dbms.connector.https.enabled=false/dbms.connector.https.enabled=true/g' /etc/neo4j/neo4j.conf
+
 echo Uncommenting dbms.ssl.policy configuration...
-for svc in https bolt cluster backup; do
-  echo Writing certificates and uncommenting default ssl policies for ${svc}
-  sed -i s/#dbms.ssl.policy.${svc}./dbms.ssl.policy.${svc}./g /etc/neo4j/neo4j.conf
+for svc in https bolt cluster backup
+do
+  echo Writing certificates and uncommenting default ssl policies for $svc
+  sed -i s/#dbms.ssl.policy.$svc/dbms.ssl.policy.$svc/g /etc/neo4j/neo4j.conf
   mkdir -p /var/lib/neo4j/certificates/${svc}/trusted
   mkdir -p /var/lib/neo4j/certificates/${svc}/revoked
   cp private.key /var/lib/neo4j/certificates/${svc}

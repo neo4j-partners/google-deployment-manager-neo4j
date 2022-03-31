@@ -11,6 +11,7 @@ echo installGraphDataScience \'$installGraphDataScience\'
 echo graphDataScienceLicenseKey \'$graphDataScienceLicenseKey\'
 echo installBloom \'$installBloom\'
 echo bloomLicenseKey \'$bloomLicenseKey\'
+echo installApoc \'$installApoc\'
 
 echo Turning off firewalld
 systemctl stop firewalld
@@ -59,9 +60,7 @@ fi
 
 echo Turning on SSL...
 sed -i 's/dbms.connector.https.enabled=false/dbms.connector.https.enabled=true/g' /etc/neo4j/neo4j.conf
-
-#### Todo - Any reason we're not running this line?
-#sed -i 's/#dbms.connector.bolt.tls_level=DISABLED/dbms.connector.bolt.tls_level=OPTIONAL/g' /etc/neo4j/neo4j.conf
+sed -i 's/#dbms.connector.bolt.tls_level=DISABLED/dbms.connector.bolt.tls_level=OPTIONAL/g' /etc/neo4j/neo4j.conf
 
 answers() {
 echo --
@@ -74,25 +73,16 @@ echo root@localhost.localdomain
 }
 answers | /usr/bin/openssl req -newkey rsa:2048 -keyout private.key -nodes -x509 -days 365 -out public.crt
 
-### Todo - turn on cluster and backup
-#for service in bolt https cluster backup; do
-for service in https bolt; do
+for service in https bolt https cluster backup; do
   sed -i s/#dbms.ssl.policy.${service}/dbms.ssl.policy.${service}/g /etc/neo4j/neo4j.conf
-  mkdir -p /var/lib/neo4j/certificates/${service}/trusted
-  mkdir -p /var/lib/neo4j/certificates/${service}/revoked
-  cp private.key /var/lib/neo4j/certificates/${service}
-  cp public.crt /var/lib/neo4j/certificates/${service}
+  mkdir -p /var/lib/neo4j/certificates/$service/trusted
+  mkdir -p /var/lib/neo4j/certificates/$service/revoked
+  cp private.key /var/lib/neo4j/certificates/$service
+  cp public.crt /var/lib/neo4j/certificates/$service
 done
 
 chown -R neo4j:neo4j /var/lib/neo4j/certificates
 chmod -R 755 /var/lib/neo4j/certificates
-
-##### Todo - What does this do?  Why aren't we taking the defaults?
-echo Configuring logging...
-sed -i s/#dbms.logs.http.enabled/dbms.logs.http.enabled/g /etc/neo4j/neo4j.conf
-sed -i s/#dbms.logs.query.enabled/dbms.logs.query.enabled/g /etc/neo4j/neo4j.conf
-sed -i s/#dbms.logs.security.enabled/dbms.logs.security.enabled/g /etc/neo4j/neo4j.conf
-sed -i s/#dbms.logs.debug.level/dbms.logs.debug.level/g /etc/neo4j/neo4j.conf
 
 if [[ $installGraphDataScience == Yes && $nodeCount == 1 ]]; then
   echo Installing Graph Data Science...
@@ -116,6 +106,11 @@ if [[ $graphDataScienceLicenseKey != None ]]; then
   mkdir -p /etc/neo4j/licenses
   echo $graphDataScienceLicenseKey > /etc/neo4j/licenses/neo4j-gds.license
   sed -i '$a gds.enterprise.license_file=/etc/neo4j/licenses/neo4j-gds.license' /etc/neo4j/neo4j.conf
+fi
+
+if [[ $installApoc == Yes ]]; then
+  echo Installing Apoc...
+  mv /var/lib/neo4j/products/bloom-plugin-*.jar /var/lib/neo4j/plugins
 fi
 
 echo Starting Neo4j...

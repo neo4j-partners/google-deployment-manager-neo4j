@@ -18,3 +18,4 @@ resources:
       graphDataScienceLicenseKey: None
       installBloom: Yes
       bloomLicenseKey: None
+      installApoc: Yes

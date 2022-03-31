@@ -30,17 +30,11 @@ echo Installing Graph Database...
 export NEO4J_ACCEPT_LICENSE_AGREEMENT=yes
 yum -y install neo4j-enterprise-${graphDatabaseVersion}
 
-echo Installing APOC...
-mv /var/lib/neo4j/labs/apoc-*-core.jar /var/lib/neo4j/plugins
-
 echo Configuring extensions and security in neo4j.conf...
 sed -i s~#dbms.unmanaged_extension_classes=org.neo4j.examples.server.unmanaged=/examples/unmanaged~dbms.unmanaged_extension_classes=com.neo4j.bloom.server=/bloom,semantics.extension=/rdf~g /etc/neo4j/neo4j.conf
 sed -i s/#dbms.security.procedures.unrestricted=my.extensions.example,my.procedures.*/dbms.security.procedures.unrestricted=gds.*,bloom.*/g /etc/neo4j/neo4j.conf
 sed -i '$a dbms.security.http_auth_allowlist=/,/browser.*,/bloom.*' /etc/neo4j/neo4j.conf
 sed -i '$a dbms.security.procedures.allowlist=apoc.*,gds.*,bloom.*' /etc/neo4j/neo4j.conf
-
-echo Installing unzip...
-yum -y install unzip
 
 echo Configuring network in neo4j.conf...
 sed -i 's/#dbms.default_listen_address=0.0.0.0/dbms.default_listen_address=0.0.0.0/g' /etc/neo4j/neo4j.conf
@@ -49,6 +43,7 @@ NODE_EXTERNAL_IP=`curl -H "Metadata-Flavor: Google" http://metadata/computeMetad
 echo NODE_EXTERNAL_IP: ${NODE_EXTERNAL_IP}
 sed -i s/#dbms.default_advertised_address=localhost/dbms.default_advertised_address=${NODE_EXTERNAL_IP}/g /etc/neo4j/neo4j.conf
 
+echo Installing on ${nodeCount} node(s)
 if [[ $nodeCount == 1 ]]; then
   echo Running on a single node.
 else
@@ -73,27 +68,30 @@ echo root@localhost.localdomain
 }
 answers | /usr/bin/openssl req -newkey rsa:2048 -keyout private.key -nodes -x509 -days 365 -out public.crt
 
-for service in https bolt cluster backup; do
-  sed -i s/#dbms.ssl.policy.${service}/dbms.ssl.policy.${service}/g /etc/neo4j/neo4j.conf
-  mkdir -p /var/lib/neo4j/certificates/${service}/trusted
-  mkdir -p /var/lib/neo4j/certificates/${service}/revoked
-  cp private.key /var/lib/neo4j/certificates/${service}
-  cp public.crt /var/lib/neo4j/certificates/${service}
-  cp private.key /var/lib/neo4j/certificates/${service}/trusted
-  cp public.crt /var/lib/neo4j/certificates/${service}/trusted
+echo Uncommenting dbms.ssl.policy configuration...
+for svc in https bolt cluster backup; do
+  echo Writing certificates and uncommenting default ssl policies for ${svc}
+  sed -i s/#dbms.ssl.policy.${svc}./dbms.ssl.policy.${svc}./g /etc/neo4j/neo4j.conf
+  mkdir -p /var/lib/neo4j/certificates/${svc}/trusted
+  mkdir -p /var/lib/neo4j/certificates/${svc}/revoked
+  cp private.key /var/lib/neo4j/certificates/${svc}
+  cp public.crt /var/lib/neo4j/certificates/${svc}
+  cp private.key /var/lib/neo4j/certificates/${svc}/trusted
+  cp public.crt /var/lib/neo4j/certificates/${svc}/trusted
 done
 
+echo Changing certificate permissions
 chown -R neo4j:neo4j /var/lib/neo4j/certificates
 chmod -R 755 /var/lib/neo4j/certificates
 
-if [[ $installGraphDataScience == Yes && $nodeCount == 1 ]]; then
+if [[ $installGraphDataScience == True && $nodeCount == 1 ]]; then
   echo Installing Graph Data Science...
-  sudo mv /var/lib/neo4j/products/neo4j-graph-data-science-*.jar /var/lib/neo4j/plugins
+  cp /var/lib/neo4j/products/neo4j-graph-data-science-*.jar /var/lib/neo4j/plugins
 fi
 
-if [[ $installBloom == Yes ]]; then
+if [[ $installBloom == True ]]; then
   echo Installing Bloom...
-  sudo mv /var/lib/neo4j/products/bloom-plugin-*.jar /var/lib/neo4j/plugins
+  cp /var/lib/neo4j/products/bloom-plugin-*.jar /var/lib/neo4j/plugins
 fi
 
 if [[ $bloomLicenseKey != None ]]; then

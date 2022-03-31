@@ -11,7 +11,7 @@ echo installGraphDataScience \'$installGraphDataScience\'
 echo graphDataScienceLicenseKey \'$graphDataScienceLicenseKey\'
 echo installBloom \'$installBloom\'
 echo bloomLicenseKey \'$bloomLicenseKey\'
-echo installApoc \'$installApoc\'
+echo apocVersion \'$apocVersion\'
 
 echo Turning off firewalld
 systemctl stop firewalld
@@ -73,12 +73,14 @@ echo root@localhost.localdomain
 }
 answers | /usr/bin/openssl req -newkey rsa:2048 -keyout private.key -nodes -x509 -days 365 -out public.crt
 
-for service in https bolt https cluster backup; do
+for service in https bolt cluster backup; do
   sed -i s/#dbms.ssl.policy.${service}/dbms.ssl.policy.${service}/g /etc/neo4j/neo4j.conf
-  mkdir -p /var/lib/neo4j/certificates/$service/trusted
-  mkdir -p /var/lib/neo4j/certificates/$service/revoked
-  cp private.key /var/lib/neo4j/certificates/$service
-  cp public.crt /var/lib/neo4j/certificates/$service
+  mkdir -p /var/lib/neo4j/certificates/${service}/trusted
+  mkdir -p /var/lib/neo4j/certificates/${service}/revoked
+  cp private.key /var/lib/neo4j/certificates/${service}
+  cp public.crt /var/lib/neo4j/certificates/${service}
+  cp private.key /var/lib/neo4j/certificates/${service}/trusted
+  cp public.crt /var/lib/neo4j/certificates/${service}/trusted
 done
 
 chown -R neo4j:neo4j /var/lib/neo4j/certificates
@@ -86,12 +88,12 @@ chmod -R 755 /var/lib/neo4j/certificates
 
 if [[ $installGraphDataScience == Yes && $nodeCount == 1 ]]; then
   echo Installing Graph Data Science...
-  mv /var/lib/neo4j/products/neo4j-graph-data-science-*.jar /var/lib/neo4j/plugins
+  sudo mv /var/lib/neo4j/products/neo4j-graph-data-science-*.jar /var/lib/neo4j/plugins
 fi
 
 if [[ $installBloom == Yes ]]; then
   echo Installing Bloom...
-  mv /var/lib/neo4j/products/bloom-plugin-*.jar /var/lib/neo4j/plugins
+  sudo mv /var/lib/neo4j/products/bloom-plugin-*.jar /var/lib/neo4j/plugins
 fi
 
 if [[ $bloomLicenseKey != None ]]; then
@@ -108,11 +110,13 @@ if [[ $graphDataScienceLicenseKey != None ]]; then
   sed -i '$a gds.enterprise.license_file=/etc/neo4j/licenses/neo4j-gds.license' /etc/neo4j/neo4j.conf
 fi
 
-if [[ $installApoc == Yes ]]; then
-  echo Installing Apoc...
-  mv /var/lib/neo4j/products/bloom-plugin-*.jar /var/lib/neo4j/plugins
+if [[ $apocVersion != None ]]; then
+  echo Installing APOC...
+  curl -L https://github.com/neo4j-contrib/neo4j-apoc-procedures/releases/download/${apocVersion}/apoc-${apocVersion}-all.jar -o apoc-${apocVersion}-all.jar
+  sudo mv apoc-${apocVersion}-all.jar /var/lib/neo4j/plugins
 fi
 
 echo Starting Neo4j...
 service neo4j start
+echo Setting initial password...
 neo4j-admin set-initial-password ${adminPassword}

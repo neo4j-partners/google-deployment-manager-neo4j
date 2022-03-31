@@ -13,9 +13,8 @@ resources:
       nodeType: n2-standard-8
       nodeCount: 1
       diskSize: 20
-      graphDatabaseVersion: 4.4.4
-      graphDataScienceVersion: 2.0.0
+      graphDatabaseVersion: 4.4.5
+      installGraphDataScience: Yes
       graphDataScienceLicenseKey: None
-      bloomVersion: 2.1.1
+      installBloom: Yes
       bloomLicenseKey: None
-      apocVersion: 4.4.0.3

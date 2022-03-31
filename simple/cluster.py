@@ -70,9 +70,9 @@ def GenerateStartupScript(context):
     script += 'adminPassword="' + context.properties['adminPassword'] + '"\n'
     script += 'nodeCount="' + str(context.properties['nodeCount']) + '"\n'
     script += 'graphDatabaseVersion="' + context.properties['graphDatabaseVersion'] + '"\n'
-    script += 'installGraphDataScience="' + context.properties['installGraphDataScience'] + '"\n'
+    script += 'installGraphDataScience="' + str(context.properties['installGraphDataScience']) + '"\n'
     script += 'graphDataScienceLicenseKey="' + context.properties['graphDataScienceLicenseKey'] + '"\n'
-    script += 'installBloom="' + context.properties['installBloom'] + '"\n'
+    script += 'installBloom="' + str(context.properties['installBloom']) + '"\n'
     script += 'bloomLicenseKey="' + context.properties['bloomLicenseKey'] + '"\n'
     script+= context.imports['node.sh']
 

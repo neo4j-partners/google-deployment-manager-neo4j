@@ -18,3 +18,4 @@ resources:
       graphDataScienceLicenseKey: None
       installBloom: No
       bloomLicenseKey: None
+      apocVersion: 4.4.0.3

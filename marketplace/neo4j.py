@@ -13,9 +13,9 @@ def GenerateConfig(context):
             'diskSize': context.properties['diskSize'],
             'adminPassword': context.properties['adminPassword'],
             'graphDatabaseVersion': context.properties['graphDatabaseVersion'],
-            'graphDataScienceVersion': context.properties['graphDataScienceVersion'],
+            'installGraphDataScience': context.properties['installGraphDataScience'],
             'graphDataScienceLicenseKey': context.properties['graphDataScienceLicenseKey'],
-            'bloomVersion': context.properties['bloomVersion'],
+            'installBloom': context.properties['installBloom'],
             'bloomLicenseKey': context.properties['bloomLicenseKey']
         }
     }

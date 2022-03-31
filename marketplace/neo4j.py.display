@@ -6,7 +6,7 @@ description:
     shortDescription: Neo4j short description goes here.
   logo: '@media/logo.png'
   title: Neo4j Enterprise Edition
-  version: 4.4.4
+  version: 4.4.5
   support:
     - title: Support
       descriptionHtml: |-
@@ -77,20 +77,17 @@ input:
     - name: graphDatabaseVersion
       title: Graph Database Version
       section: neo4j
-    - name: graphDataScienceVersion
-      title: Graph Data Science Version
+    - name: installGraphDataScience
+      title: Install Graph Data Science
       section: neo4j
     - name: graphDataScienceLicenseKey
       title: Graph Data Science License Key
       section: neo4j
-    - name: bloomVersion
-      title: Bloom Version
+    - name: installBloom
+      title: Install Bloom
       section: neo4j
     - name: bloomLicenseKey
       title: Bloom License Key
       section: neo4j
-    - name: apocVersion
-      title: APOC Version
-      section: neo4j
 runtime:
-  deployingMessage: Deployment can take several minutes to complete.
+  deployingMessage: Deployment takes several minutes to complete.

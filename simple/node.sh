@@ -79,11 +79,11 @@ do
   cp public_cert.pem /var/lib/neo4j/certificates/${svc}
   cp private_key.pem /var/lib/neo4j/certificates/${svc}/trusted
   cp public_cert.pem /var/lib/neo4j/certificates/${svc}/trusted
-  sed -i '$a dbms.ssl.policy.${svc}.trust_all=true' /etc/neo4j/neo4j.conf
+  sed -i "$a dbms.ssl.policy.${svc}.trust_all=true" /etc/neo4j/neo4j.conf
 done
 
 sed -i s/private_key=private.key/private_key=private_key.pem/g /etc/neo4j/neo4j.conf
-sed -i s/private_key=private.key/public_certificate=public_cert.pem/g /etc/neo4j/neo4j.conf
+sed -i s/public_certificate=public.crt/public_certificate=public_cert.pem/g /etc/neo4j/neo4j.conf
 
 echo Changing certificate permissions
 chown -R neo4j:neo4j /var/lib/neo4j/certificates

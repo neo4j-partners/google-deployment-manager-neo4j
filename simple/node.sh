@@ -57,16 +57,7 @@ echo Turning on SSL...
 sed -i 's/dbms.connector.https.enabled=false/dbms.connector.https.enabled=true/g' /etc/neo4j/neo4j.conf
 sed -i 's/#dbms.connector.bolt.tls_level=DISABLED/dbms.connector.bolt.tls_level=OPTIONAL/g' /etc/neo4j/neo4j.conf
 
-answers() {
-echo --
-echo SomeState
-echo SomeCity
-echo SomeOrganization
-echo SomeOrganizationalUnit
-echo localhost.localdomain
-echo root@localhost.localdomain
-}
-answers | /usr/bin/openssl req -newkey rsa:2048 -keyout private.key -nodes -x509 -days 365 -out public.crt
+/usr/bin/openssl req -x509 -newkey rsa:2048 -keyout private_key.pem -nodes -subj "/CN=neo4j-ssc/emailAddress=admin@neo4j.com/C=US/ST=CA/L=San  Mateo/O=Neo4J Customer/OU=Some Unit" -out public_cert.pem -days 365
 
 # Logging
 sed -i s/#dbms.logs.http.enabled/dbms.logs.http.enabled/g /etc/neo4j/neo4j.conf
@@ -84,11 +75,15 @@ do
   sed -i s/#dbms.ssl.policy.$svc/dbms.ssl.policy.$svc/g /etc/neo4j/neo4j.conf
   mkdir -p /var/lib/neo4j/certificates/${svc}/trusted
   mkdir -p /var/lib/neo4j/certificates/${svc}/revoked
-  cp private.key /var/lib/neo4j/certificates/${svc}
-  cp public.crt /var/lib/neo4j/certificates/${svc}
-  cp private.key /var/lib/neo4j/certificates/${svc}/trusted
-  cp public.crt /var/lib/neo4j/certificates/${svc}/trusted
+  cp private_key.pem /var/lib/neo4j/certificates/${svc}
+  cp public_cert.pem /var/lib/neo4j/certificates/${svc}
+  cp private_key.pem /var/lib/neo4j/certificates/${svc}/trusted
+  cp public_cert.pem /var/lib/neo4j/certificates/${svc}/trusted
+  sed -i '$a dbms.ssl.policy.${svc}.trust_all=true' /etc/neo4j/neo4j.conf
 done
+
+sed -i s/private_key=private.key/private_key=private_key.pem/g /etc/neo4j/neo4j.conf
+sed -i s/private_key=private.key/public_certificate=public_cert.pem/g /etc/neo4j/neo4j.conf
 
 echo Changing certificate permissions
 chown -R neo4j:neo4j /var/lib/neo4j/certificates
@@ -118,11 +113,8 @@ if [[ $graphDataScienceLicenseKey != None ]]; then
   sed -i '$a gds.enterprise.license_file=/etc/neo4j/licenses/neo4j-gds.license' /etc/neo4j/neo4j.conf
 fi
 
-if [[ $apocVersion != None ]]; then
-  echo Installing APOC...
-  curl -L https://github.com/neo4j-contrib/neo4j-apoc-procedures/releases/download/${apocVersion}/apoc-${apocVersion}-all.jar -o apoc-${apocVersion}-all.jar
-  sudo mv apoc-${apocVersion}-all.jar /var/lib/neo4j/plugins
-fi
+echo Installing Apoc...
+cp /var/lib/neo4j/labs/apoc-*.jar /var/lib/neo4j/plugins
 
 echo Starting Neo4j...
 service neo4j start

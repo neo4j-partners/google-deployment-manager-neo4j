@@ -43,7 +43,7 @@ NODE_EXTERNAL_IP=`curl -H "Metadata-Flavor: Google" http://metadata/computeMetad
 echo NODE_EXTERNAL_IP: ${NODE_EXTERNAL_IP}
 sed -i s/#dbms.default_advertised_address=localhost/dbms.default_advertised_address=${NODE_EXTERNAL_IP}/g /etc/neo4j/neo4j.conf
 
-echo Installing on ${nodeCount} node(s)
+echo Installing on ${nodeCount} node
 if [[ $nodeCount == 1 ]]; then
   echo Running on a single node.
 else
@@ -80,7 +80,7 @@ sed -i 's/dbms.connector.https.enabled=false/dbms.connector.https.enabled=true/g
 echo Uncommenting dbms.ssl.policy configuration...
 for svc in https bolt cluster backup
 do
-  echo Writing certificates and uncommenting default ssl policies for $svc
+  echo For $svc copying certs and uncommenting default ssl policies
   sed -i s/#dbms.ssl.policy.$svc/dbms.ssl.policy.$svc/g /etc/neo4j/neo4j.conf
   mkdir -p /var/lib/neo4j/certificates/${svc}/trusted
   mkdir -p /var/lib/neo4j/certificates/${svc}/revoked

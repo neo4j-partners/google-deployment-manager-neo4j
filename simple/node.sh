@@ -57,7 +57,7 @@ echo Turning on SSL...
 sed -i 's/dbms.connector.https.enabled=false/dbms.connector.https.enabled=true/g' /etc/neo4j/neo4j.conf
 sed -i 's/#dbms.connector.bolt.tls_level=DISABLED/dbms.connector.bolt.tls_level=OPTIONAL/g' /etc/neo4j/neo4j.conf
 
-/usr/bin/openssl req -x509 -newkey rsa:2048 -keyout private_key.pem -nodes -subj "/CN=neo4j-ssc/emailAddress=admin@neo4j.com/C=US/ST=CA/L=San  Mateo/O=Neo4J Customer/OU=Some Unit" -out public_cert.pem -days 365
+/usr/bin/openssl req -x509 -newkey rsa:2048 -keyout neo4j.key -nodes -subj "/CN=neo4j-ssc/emailAddress=admin@neo4j.com/C=US/ST=CA/L=San  Mateo/O=Neo4J Customer/OU=Some Unit" -out neo4j.crt -days 365
 
 # Logging
 sed -i s/#dbms.logs.http.enabled/dbms.logs.http.enabled/g /etc/neo4j/neo4j.conf
@@ -75,15 +75,15 @@ do
   sed -i s/#dbms.ssl.policy.$svc/dbms.ssl.policy.$svc/g /etc/neo4j/neo4j.conf
   mkdir -p /var/lib/neo4j/certificates/${svc}/trusted
   mkdir -p /var/lib/neo4j/certificates/${svc}/revoked
-  cp private_key.pem /var/lib/neo4j/certificates/${svc}
-  cp public_cert.pem /var/lib/neo4j/certificates/${svc}
-  cp private_key.pem /var/lib/neo4j/certificates/${svc}/trusted
-  cp public_cert.pem /var/lib/neo4j/certificates/${svc}/trusted
+  cp neo4j.key /var/lib/neo4j/certificates/${svc}
+  cp neo4j.crt /var/lib/neo4j/certificates/${svc}
+  cp neo4j.key /var/lib/neo4j/certificates/${svc}/trusted
+  cp neo4j.crt /var/lib/neo4j/certificates/${svc}/trusted
   # sed -i "$a dbms.ssl.policy.${svc}.trust_all=true" /etc/neo4j/neo4j.conf
 done
 
-sed -i s/private_key=private.key/private_key=private_key.pem/g /etc/neo4j/neo4j.conf
-sed -i s/public_certificate=public.crt/public_certificate=public_cert.pem/g /etc/neo4j/neo4j.conf
+sed -i s/private_key=private.key/private_key=neo4j.key/g /etc/neo4j/neo4j.conf
+sed -i s/public_certificate=public.crt/public_certificate=neo4j.crt/g /etc/neo4j/neo4j.conf
 sed -i '$a dbms.ssl.policy.bolt.trust_all=true' /etc/neo4j/neo4j.conf
 sed -i '$a dbms.ssl.policy.https.trust_all=true' /etc/neo4j/neo4j.conf
 sed -i '$a dbms.ssl.policy.cluster.trust_all=true' /etc/neo4j/neo4j.conf

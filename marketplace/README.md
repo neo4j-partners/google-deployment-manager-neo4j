@@ -1,5 +1,4 @@
 # marketplace
-
 As an end user, you should have little use for the contents of this directory and almost certainly want to either use the Marketplace listing directly or [simple](../simple/).  If you're a Neo4j employee, updating the Google Marketplace listing, these notes may be helpful.
 
 ## Updating the Listing

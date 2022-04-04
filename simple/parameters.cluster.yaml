@@ -14,8 +14,7 @@ resources:
       nodeCount: 3
       diskSize: 20
       graphDatabaseVersion: 4.4.5
-      installGraphDataScience: No
+      installGraphDataScience: False
       graphDataScienceLicenseKey: None
-      installBloom: No
+      installBloom: False
       bloomLicenseKey: None
-      apocVersion: 4.4.0.3

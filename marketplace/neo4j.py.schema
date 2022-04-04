@@ -30,13 +30,13 @@ properties:
     default: '4.4.5'
   installGraphDataScience:
     type: string
-    default: 'Yes'
+    default: 'True'
   graphDataScienceLicenseKey:
     type: string
     default: 'None'
   installBloom:
     type: string
-    default: 'Yes'
+    default: 'True'
   bloomLicenseKey:
     type: string
     default: 'None'

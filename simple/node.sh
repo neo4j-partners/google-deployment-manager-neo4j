@@ -89,6 +89,13 @@ if [[ $installGraphDataScience == True && $nodeCount == 1 ]]; then
   cp /var/lib/neo4j/products/neo4j-graph-data-science-*.jar /var/lib/neo4j/plugins
 fi
 
+if [[ $graphDataScienceLicenseKey != None ]]; then
+  echo Writing GDS license key...
+  mkdir -p /etc/neo4j/licenses
+  echo $graphDataScienceLicenseKey > /etc/neo4j/licenses/neo4j-gds.license
+  sed -i '$a gds.enterprise.license_file=/etc/neo4j/licenses/neo4j-gds.license' /etc/neo4j/neo4j.conf
+fi
+
 if [[ $installBloom == True ]]; then
   echo Installing Bloom...
   cp /var/lib/neo4j/products/bloom-plugin-*.jar /var/lib/neo4j/plugins
@@ -99,13 +106,6 @@ if [[ $bloomLicenseKey != None ]]; then
   mkdir -p /etc/neo4j/licenses
   echo $bloomLicenseKey > /etc/neo4j/licenses/neo4j-bloom.license
   sed -i '$a neo4j.bloom.license_file=/etc/neo4j/licenses/neo4j-bloom.license' /etc/neo4j/neo4j.conf
-fi
-
-if [[ $graphDataScienceLicenseKey != None ]]; then
-  echo Writing GDS license key...
-  mkdir -p /etc/neo4j/licenses
-  echo $graphDataScienceLicenseKey > /etc/neo4j/licenses/neo4j-gds.license
-  sed -i '$a gds.enterprise.license_file=/etc/neo4j/licenses/neo4j-gds.license' /etc/neo4j/neo4j.conf
 fi
 
 echo Starting Neo4j...

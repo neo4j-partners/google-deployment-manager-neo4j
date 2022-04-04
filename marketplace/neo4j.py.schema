@@ -34,7 +34,7 @@ properties:
   graphDataScienceLicenseKey:
     type: string
     default: 'None'
-  installlBloom:
+  installBloom:
     type: string
     default: 'Yes'
   bloomLicenseKey:

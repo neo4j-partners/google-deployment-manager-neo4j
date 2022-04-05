@@ -30,12 +30,6 @@ echo Installing Graph Database...
 export NEO4J_ACCEPT_LICENSE_AGREEMENT=yes
 yum -y install neo4j-enterprise-${graphDatabaseVersion}
 
-echo Configuring extensions and security in neo4j.conf...
-sed -i s~#dbms.unmanaged_extension_classes=org.neo4j.examples.server.unmanaged=/examples/unmanaged~dbms.unmanaged_extension_classes=com.neo4j.bloom.server=/bloom,semantics.extension=/rdf~g /etc/neo4j/neo4j.conf
-sed -i s/#dbms.security.procedures.unrestricted=my.extensions.example,my.procedures.*/dbms.security.procedures.unrestricted=gds.*,bloom.*/g /etc/neo4j/neo4j.conf
-sed -i '$a dbms.security.http_auth_allowlist=/,/browser.*,/bloom.*' /etc/neo4j/neo4j.conf
-sed -i '$a dbms.security.procedures.allowlist=apoc.*,gds.*,bloom.*' /etc/neo4j/neo4j.conf
-
 echo Configuring network in neo4j.conf...
 sed -i 's/#dbms.default_listen_address=0.0.0.0/dbms.default_listen_address=0.0.0.0/g' /etc/neo4j/neo4j.conf
 
@@ -55,9 +49,37 @@ fi
 
 echo Turning on SSL...
 sed -i 's/dbms.connector.https.enabled=false/dbms.connector.https.enabled=true/g' /etc/neo4j/neo4j.conf
-sed -i 's/#dbms.connector.bolt.tls_level=DISABLED/dbms.connector.bolt.tls_level=OPTIONAL/g' /etc/neo4j/neo4j.conf
+#sed -i 's/#dbms.connector.bolt.tls_level=DISABLED/dbms.connector.bolt.tls_level=OPTIONAL/g' /etc/neo4j/neo4j.conf
 
-/usr/bin/openssl req -x509 -newkey rsa:2048 -keyout neo4j.key -nodes -subj "/CN=neo4j-ssc/emailAddress=admin@neo4j.com/C=US/ST=CA/L=San  Mateo/O=Neo4J Customer/OU=Some Unit" -out neo4j.crt -days 365
+# Note: in Neo v.4.x self-signed certs are not supported for browser tools (including desktop).
+# So use http (not https) and bolt not bolt+s for these
+# From coding environments you can use the bolt+ssc protocol
+answers() {
+echo --
+echo SomeState
+echo SomeCity
+echo SomeOrganization
+echo SomeOrganizationalUnit
+echo localhost.localdomain
+echo root@localhost.localdomain
+}
+answers | /usr/bin/openssl req -newkey rsa:2048 -keyout private.key -nodes -x509 -days 365 -out public.crt
+
+echo Uncommenting dbms.ssl.policy configuration...
+
+for svc in https bolt cluster backup
+do
+  sed -i s/#dbms.ssl.policy.$svc/dbms.ssl.policy.$svc/g /etc/neo4j/neo4j.conf
+  mkdir -p /var/lib/neo4j/certificates/$svc/trusted
+  mkdir -p /var/lib/neo4j/certificates/$svc/revoked
+  cp private.key /var/lib/neo4j/certificates/$svc
+  cp public.crt /var/lib/neo4j/certificates/$svc
+  # public but not private key must be in the trusted subdirectory
+  cp public.crt /var/lib/neo4j/certificates/$svc/trusted
+done
+
+chown -R neo4j:neo4j /var/lib/neo4j/certificates
+chmod -R 755 /var/lib/neo4j/certificates
 
 # Logging
 sed -i s/#dbms.logs.http.enabled/dbms.logs.http.enabled/g /etc/neo4j/neo4j.conf
@@ -67,31 +89,10 @@ sed -i s/#dbms.logs.debug.level/dbms.logs.debug.level/g /etc/neo4j/neo4j.conf
 
 echo Turning on SSL...
 sed -i 's/dbms.connector.https.enabled=false/dbms.connector.https.enabled=true/g' /etc/neo4j/neo4j.conf
-
-echo Uncommenting dbms.ssl.policy configuration...
-for svc in https bolt cluster backup
-do
-  echo For $svc copying certs and uncommenting default ssl policies
-  sed -i s/#dbms.ssl.policy.$svc/dbms.ssl.policy.$svc/g /etc/neo4j/neo4j.conf
-  mkdir -p /var/lib/neo4j/certificates/${svc}/trusted
-  mkdir -p /var/lib/neo4j/certificates/${svc}/revoked
-  cp neo4j.key /var/lib/neo4j/certificates/${svc}
-  cp neo4j.crt /var/lib/neo4j/certificates/${svc}
-  cp neo4j.key /var/lib/neo4j/certificates/${svc}/trusted
-  cp neo4j.crt /var/lib/neo4j/certificates/${svc}/trusted
-  # sed -i "$a dbms.ssl.policy.${svc}.trust_all=true" /etc/neo4j/neo4j.conf
-done
-
-sed -i s/private_key=private.key/private_key=neo4j.key/g /etc/neo4j/neo4j.conf
-sed -i s/public_certificate=public.crt/public_certificate=neo4j.crt/g /etc/neo4j/neo4j.conf
 sed -i '$a dbms.ssl.policy.bolt.trust_all=true' /etc/neo4j/neo4j.conf
 sed -i '$a dbms.ssl.policy.https.trust_all=true' /etc/neo4j/neo4j.conf
 sed -i '$a dbms.ssl.policy.cluster.trust_all=true' /etc/neo4j/neo4j.conf
 sed -i '$a dbms.ssl.policy.backup.trust_all=true' /etc/neo4j/neo4j.conf
-
-echo Changing certificate permissions
-chown -R neo4j:neo4j /var/lib/neo4j/certificates
-chmod -R 755 /var/lib/neo4j/certificates
 
 if [[ $installGraphDataScience == True && $nodeCount == 1 ]]; then
   echo Installing Graph Data Science...
@@ -119,6 +120,12 @@ fi
 
 echo Installing Apoc...
 cp /var/lib/neo4j/labs/apoc-*.jar /var/lib/neo4j/plugins
+
+echo Configuring extensions and security in neo4j.conf...
+sed -i s~#dbms.unmanaged_extension_classes=org.neo4j.examples.server.unmanaged=/examples/unmanaged~dbms.unmanaged_extension_classes=com.neo4j.bloom.server=/bloom,semantics.extension=/rdf~g /etc/neo4j/neo4j.conf
+sed -i s/#dbms.security.procedures.unrestricted=my.extensions.example,my.procedures.*/dbms.security.procedures.unrestricted=gds.*,bloom.*/g /etc/neo4j/neo4j.conf
+sed -i '$a dbms.security.http_auth_allowlist=/,/browser.*,/bloom.*' /etc/neo4j/neo4j.conf
+sed -i '$a dbms.security.procedures.allowlist=apoc.*,gds.*,bloom.*' /etc/neo4j/neo4j.conf
 
 echo Starting Neo4j...
 service neo4j start

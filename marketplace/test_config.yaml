@@ -1,12 +1,12 @@
 imports:
-  - path: deployment.py
+  - path: neo4j.py
   - path: cluster.py
   - path: node.sh
   - path: parseCoreMembers.py
 
 resources:
-  - name: deployment
-    type: deployment.py
+  - name: neo4j
+    type: neo4j.py
     properties:
       region: us-east1
       adminPassword: foo123

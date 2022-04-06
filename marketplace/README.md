@@ -11,4 +11,6 @@ Google requires completion of an open source worksheet.  Ours is [here](https://
 Start with a platform image...
     sourceImage = 'projects/rhel-cloud/global/images/rhel-8-v20220303'
 
-Create a new image.  
+Create a new image...
+
+There's a writeup on process here: https://github.com/couchbase-portfolio/google-deployment-manager-couchbase/blob/master/cloudlauncher/README.md

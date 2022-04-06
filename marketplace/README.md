@@ -6,3 +6,9 @@ To submit an updated listing, simply run ./makeArchive.sh and then submit the re
 
 ## Open Source Worksheet
 Google requires completion of an open source worksheet.  Ours is [here](https://docs.google.com/spreadsheets/d/1z2YDbdeUVzHkpEmJGqYfcFHZcSd4rBPazYYH-zSJEg0/edit?usp=sharing).
+
+## Image Build
+Start with a platform image...
+    sourceImage = 'projects/rhel-cloud/global/images/rhel-8-v20220303'
+
+Create a new image.  

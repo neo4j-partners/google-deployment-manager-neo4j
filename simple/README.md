@@ -19,9 +19,9 @@ Now, you'll need a copy of this repo.  To make a local copy, run the commands:
     cd simple
 
 ## Creating a Deployment
-This repo contains different parameters files.  You can deploy with any of them using [deploy.sh](deploy.sh).  For example, to deploy the simple configuration run the command:
+This repo contains different parameters files.  You can deploy with any of them using [deploy.sh](deploy.sh).  For example, to deploy the single configuration run the command:
 
-    ./deploy.sh simple <some deployment name>
+    ./deploy.sh <some deployment name> single
 
 The script then passes the cluster configuration to GCP and builds your cluster automatically.
 

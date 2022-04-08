@@ -54,16 +54,7 @@ sed -i 's/dbms.connector.https.enabled=false/dbms.connector.https.enabled=true/g
 # Note: in Neo v.4.x self-signed certs are not supported for browser tools (including desktop).
 # So use http (not https) and bolt not bolt+s for these
 # From coding environments you can use the bolt+ssc protocol
-answers() {
-echo --
-echo SomeState
-echo SomeCity
-echo SomeOrganization
-echo SomeOrganizationalUnit
-echo localhost.localdomain
-echo root@localhost.localdomain
-}
-answers | /usr/bin/openssl req -newkey rsa:2048 -keyout private.key -nodes -x509 -days 365 -out public.crt
+/usr/bin/openssl req -x509 -newkey rsa:2048 -keyout private.key -nodes -subj "/CN=neo4j-ssc/emailAddress=admin@neo4j.com/C=US/ST=CA/L=San  Mateo/O=Neo4J Customer/OU=Some Unit" -out public.crt -days 365
 
 echo Uncommenting dbms.ssl.policy configuration...
 
@@ -76,23 +67,20 @@ do
   cp public.crt /var/lib/neo4j/certificates/$svc
   # public but not private key must be in the trusted subdirectory
   cp public.crt /var/lib/neo4j/certificates/$svc/trusted
+  sed -i "$a dbms.ssl.policy.${svc}.trust_all=true" /etc/neo4j/neo4j.conf
 done
 
 chown -R neo4j:neo4j /var/lib/neo4j/certificates
 chmod -R 755 /var/lib/neo4j/certificates
+
+echo Turning on SSL...
+sed -i 's/dbms.connector.https.enabled=false/dbms.connector.https.enabled=true/g' /etc/neo4j/neo4j.conf
 
 # Logging
 sed -i s/#dbms.logs.http.enabled/dbms.logs.http.enabled/g /etc/neo4j/neo4j.conf
 sed -i s/#dbms.logs.query.enabled/dbms.logs.query.enabled/g /etc/neo4j/neo4j.conf
 sed -i s/#dbms.logs.security.enabled/dbms.logs.security.enabled/g /etc/neo4j/neo4j.conf
 sed -i s/#dbms.logs.debug.level/dbms.logs.debug.level/g /etc/neo4j/neo4j.conf
-
-echo Turning on SSL...
-sed -i 's/dbms.connector.https.enabled=false/dbms.connector.https.enabled=true/g' /etc/neo4j/neo4j.conf
-sed -i '$a dbms.ssl.policy.bolt.trust_all=true' /etc/neo4j/neo4j.conf
-sed -i '$a dbms.ssl.policy.https.trust_all=true' /etc/neo4j/neo4j.conf
-sed -i '$a dbms.ssl.policy.cluster.trust_all=true' /etc/neo4j/neo4j.conf
-sed -i '$a dbms.ssl.policy.backup.trust_all=true' /etc/neo4j/neo4j.conf
 
 if [[ $installGraphDataScience == True && $nodeCount == 1 ]]; then
   echo Installing Graph Data Science...

@@ -1,6 +1,20 @@
 imports:
-- path: neo4j.py
+  - path: neo4j.py
+  - path: cluster.py
+  - path: node.sh
+  - path: parseCoreMembers.py
 
 resources:
-- name: neo4j
-  type: neo4j.py
+  - name: neo4j
+    type: neo4j.py
+    properties:
+      region: us-east1
+      adminPassword: foo123
+      nodeType: n2-standard-8
+      nodeCount: 1
+      diskSize: 20
+      graphDatabaseVersion: 4.4.5
+      installGraphDataScience: True
+      graphDataScienceLicenseKey: None
+      installBloom: True
+      bloomLicenseKey: None

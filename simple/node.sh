@@ -67,7 +67,6 @@ do
   cp public.crt /var/lib/neo4j/certificates/$svc
   # public but not private key must be in the trusted subdirectory
   cp public.crt /var/lib/neo4j/certificates/$svc/trusted
-  sed -i "$a dbms.ssl.policy.${svc}.trust_all=true" /etc/neo4j/neo4j.conf
 done
 
 chown -R neo4j:neo4j /var/lib/neo4j/certificates

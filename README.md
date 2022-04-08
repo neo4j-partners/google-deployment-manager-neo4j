@@ -13,16 +13,4 @@ When working with non-public data, please carefully follow instructions in <i>Ne
 
 Please note that if you want to enable enterprise features, please copy the default configuration file, and then add license keys.
 
-To deploy this template, please configure gcloud locally and run a script like this:
-
-    ./deploy.sh single-test-deployment my_config_variant
-
-The deploy.sh script is simply passing in the first argument as the deployment name, and the second represents the parameter file variant, as shown below:
-
-    deploy.sh
-
-    #!/bin/sh
-    DEPLOYMENT_NAME=$1
-    PARAMETERS_FILE=$2
-    gcloud deployment-manager deployments create ${DEPLOYMENT_NAME} --config parameters.${PARAMETERS_FILE}.yaml
-
+More deployment details are in the /simple and /marketplace folders

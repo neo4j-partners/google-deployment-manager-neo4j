@@ -31,10 +31,6 @@ The script then passes the cluster configuration to GCP and builds your cluster 
 
 To access the cluster, open the [Google Cloud Console](http://cloud.google.com/console), navigate to Compute Engine and pick a node.  You can access the Neo4j Browser on port 7474 of the public IP of that node.
 
-To view logs in near real-time, try:
-
-    sudo tail -200 /var/log/messages
-
 ## Deleting a Deployment
 To delete your deployment you can either run the command below or use the GUI in the [Google Cloud Console](http://cloud.google.com/console).
 

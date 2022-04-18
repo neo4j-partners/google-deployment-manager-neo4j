@@ -6,7 +6,7 @@ imports:
 
 info:
   version: 4.4.5
-  title: Neo4j
+  title: Neo4j Enterprise Edition
 
 properties:
   region:

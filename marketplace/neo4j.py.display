@@ -4,7 +4,6 @@ description:
     title: Neo4j
     descriptionHtml: Neo4j description HTML goes here.
     shortDescription: Neo4j short description goes here.
-  logo: '@media/logo.png'
   title: Neo4j Enterprise Edition
   version: 4.4.5
   support:
@@ -14,7 +13,6 @@ description:
         Reach out to our online community.
       showSupportId: false
       url: 'https://support.neo4j.com/hc/en-us'
-  icon: '@media/logo.png'
   softwareGroups: []
   tagline: Neo4j Enterprise Edition
   descriptionHtml: >-

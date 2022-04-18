@@ -23,7 +23,7 @@ Then you're going to want to set these variables based on what you found above.
 
 Next, create an image for each license:
 
-    LICENSE=neo4j-ee
+    LICENSE=neo4j-enterprise-edition-byol
     INSTANCE=${LICENSE}-${IMAGE_VERSION}
     gcloud compute instances create ${INSTANCE} \
     --project "neo4j-aura-gcp" \
@@ -40,7 +40,7 @@ Next, create an image for each license:
 
 Now we're going to delete the VM.  We'll be left with its boot disk.  This command takes a few minutes to run and doesn't print anything.  
 
-    LICENSE=neo4j-ee
+    LICENSE=neo4j-enterprise-edition-byol
     INSTANCE=${LICENSE}-${IMAGE_VERSION}
     gcloud compute instances delete ${INSTANCE} \
     --project "neo4j-aura-gcp" \
@@ -48,25 +48,9 @@ Now we're going to delete the VM.  We'll be left with its boot disk.  This comma
 
 We were previously piping yes, but that doesn't seem to be working currently, so you'll have to type "y" a few times.
 
-Now you need to attach the license ID to each image.  That process is described [here](https://cloud.google.com/launcher/docs/partners/technical-components#create_the_base_solution_vm).  
-Note that you do not need to mount the disks and delete files since none were created.  To start, install the partner utilities:
 
-    mkdir partner-utils
-    cd partner-utils
-    curl -O https://storage.googleapis.com/c2d-install-scripts/partner-utils.tar.gz
-    tar -xzvf partner-utils.tar.gz
-    sudo python setup.py install
-
-Now apply the license:
-
-    LICENSE=neo4j-ee
-    INSTANCE=${LICENSE}-${IMAGE_VERSION}
-    python image_creator.py \
-    --project neo4j-aura-gcp \
-    --disk ${INSTANCE} \
-    --name ${INSTANCE} \
-    --description ${INSTANCE} \
-    --destination-project neo4j-aura-gcp \
-    --license neo4j-aura-gcp/${LICENSE}
-
-The license ID for the underlying RHEL image should be attached by default.
+gcloud compute images create neo4j-enterprise-edition-byol-v20220418 \
+--project "neo4j-aura-gcp" \
+--source-disk projects/neo4j-aura-gcp/zones/us-central1-f/disks/neo4j-enterprise-edition-byol-v20220406 \
+--licenses projects/neo4j-aura-gcp/global/licenses/neo4j-enterprise-edition-byol \
+--description ADD_DESCRIPTION

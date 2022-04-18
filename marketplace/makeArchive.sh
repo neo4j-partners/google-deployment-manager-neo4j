@@ -14,7 +14,9 @@ cp ../simple/cluster.py tmp
 cp ../simple/node.sh tmp
 cp ../simple/parseCoreMembers.py tmp
 
-cp -r resources tmp
+cd tmp
 
-zip -r -X archive.zip tmp
+zip -r -X archive.zip *
+mv archive.zip ../
+cd ..
 rm -rf tmp

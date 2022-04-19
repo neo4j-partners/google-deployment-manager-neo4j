@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-echo "Running node.sh"
+echo "Running core.sh"
 
 echo "Using the settings:"
 echo deployment \'$deployment\'

@@ -1,7 +1,7 @@
 imports:
   - path: neo4j.py
   - path: cluster.py
-  - path: node.sh
+  - path: core.sh
   - path: parseCoreMembers.py
 
 resources:

@@ -1,8 +1,5 @@
-URL_BASE = 'https://www.googleapis.com/compute/v1/projects/'
-
 def GenerateConfig(context):
-    #sourceImage = URL_BASE + 'neo4j-public/global/images/neo4j-ee'
-    sourceImage = 'projects/rhel-cloud/global/images/rhel-8-v20220406'
+    sourceImage = 'projects/neo4j-aura-gcp/global/images/neo4j-enterprise-edition-byol-v20220406'
 
     instanceTemplateName = context.env['deployment'] + '-cluster' + '-it'
     instanceTemplate = {
@@ -12,7 +9,7 @@ def GenerateConfig(context):
             'properties': {
                 'machineType': context.properties['nodeType'],
                 'networkInterfaces': [{
-                    'network': URL_BASE + context.env['project'] + '/global/networks/default',
+                    'network': 'https://www.googleapis.com/compute/v1/projects/' + context.env['project'] + '/global/networks/default',
                     'accessConfigs': [{
                         'name': 'External NAT',
                         'type': 'ONE_TO_ONE_NAT'

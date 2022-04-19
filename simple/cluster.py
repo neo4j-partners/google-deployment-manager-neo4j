@@ -71,6 +71,6 @@ def GenerateStartupScript(context):
     script += 'graphDataScienceLicenseKey="' + context.properties['graphDataScienceLicenseKey'] + '"\n'
     script += 'installBloom="' + str(context.properties['installBloom']) + '"\n'
     script += 'bloomLicenseKey="' + context.properties['bloomLicenseKey'] + '"\n'
-    script+= context.imports['node.sh']
+    script+= context.imports['core.sh']
 
     return script

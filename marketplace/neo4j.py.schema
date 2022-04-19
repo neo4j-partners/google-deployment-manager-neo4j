@@ -1,7 +1,7 @@
 imports:
   - path: deployment.py
   - path: cluster.py
-  - path: node.sh
+  - path: core.sh
   - path: parseCoreMembers.py
 
 info:

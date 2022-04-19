@@ -1,5 +1,5 @@
 def GenerateConfig(context):
-    sourceImage = 'projects/neo4j-aura-gcp/global/images/neo4j-enterprise-edition-byol-v20220406'
+    sourceImage = 'projects/neo4j-aura-gcp/global/images/neo4j-enterprise-edition-byol-v20220418'
 
     instanceTemplateName = context.env['deployment'] + '-cluster' + '-it'
     instanceTemplate = {

@@ -23,7 +23,7 @@ This repo contains different parameters files.  You can deploy with any of them 
 
     ./deploy.sh <some deployment name> single
 
-> **_Note for Data Science and Machine Learning Use Cases:_**  In general, we recommend starting with with  the `single` as opposed to the `cluster` configuration. It is easier to get started with using Graph Data Science (GDS) on a single instance and doing so has no impact on GDS algorithm and ML performance. 
+> **_Note for Data Science and Machine Learning Use Cases:_**  In general, we recommend starting with with the `single` as opposed to the `cluster` configuration. It is easier to get started using Graph Data Science (GDS) on a single instance and doing so has no impact on GDS algorithm and ML performance. 
 
 Using the <i>parameters.custom.yaml</i> configuration file, deploy could look like this:
 

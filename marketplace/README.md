@@ -2,7 +2,11 @@
 As an end user, you should have little use for the contents of this directory and almost certainly want to either use the Marketplace listing directly or [simple](../simple/).  If you're a Neo4j employee, updating the Google Marketplace listing, these notes may be helpful.
 
 ## Updating the Listing
-To submit an updated listing, run ./makeArchive.sh.  You'll then need to upload that archive to the neo4j-deployment-packages bucket in neo4j-aura-gcp.  After that you can upload the archive to the Producer Portal [here](https://console.cloud.google.com/producer-portal/overview?project=neo4j-aura-gcp) and hit submit.
+To submit an updated listing, run ./makeArchive.sh.  You'll then need to upload that archive to the neo4j-deployment-packages bucket in neo4j-aura-gcp. 
+```
+❯ gcloud alpha storage cp marketplace/archive.zip gs://neo4j-deployment-packages
+```
+After that you can upload the archive to the Producer Portal [here](https://console.cloud.google.com/producer-portal/overview?project=neo4j-aura-gcp) and hit submit.
 
 ## Open Source Worksheet
 Google requires completion of an open source worksheet.  Ours is [here](https://docs.google.com/spreadsheets/d/1z2YDbdeUVzHkpEmJGqYfcFHZcSd4rBPazYYH-zSJEg0/edit?usp=sharing).

@@ -5,7 +5,7 @@ imports:
   - path: parseCoreMembers.py
 
 info:
-  version: 4.4.5
+  version: 4.4.9
   title: Neo4j Enterprise Edition
 
 properties:
@@ -27,7 +27,7 @@ properties:
     type: string
   graphDatabaseVersion:
     type: string
-    default: '4.4.5'
+    default: '4.4.9'
   installGraphDataScience:
     type: string
     default: 'True'

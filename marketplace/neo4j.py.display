@@ -5,7 +5,7 @@ description:
     descriptionHtml: Neo4j description HTML goes here.
     shortDescription: Neo4j short description goes here.
   title: Neo4j Enterprise Edition
-  version: 4.4.9
+  version: 4.4.10
   support:
     - title: Support
       descriptionHtml: |-

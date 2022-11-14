@@ -5,7 +5,7 @@ imports:
   - path: parseCoreMembers.py
 
 info:
-  version: 4.4.11
+  version: 5.1.0
   title: Neo4j Enterprise Edition
 
 properties:
@@ -16,7 +16,7 @@ properties:
     type: integer
     default: 1
     minimum: 1
-    maximum: 3
+    maximum: 10
   nodeType:
     type: string
     default: n2-standard-4

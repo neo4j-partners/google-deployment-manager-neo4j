@@ -15,7 +15,7 @@ instances=json.loads(blob)
 output=''
 for instance in instances:
     if instance['name'].startswith(deployment):
-        externalIP=instance['networkInterfaces'][0]['accessConfigs'][0]['natIP']
+        externalIP=instance['networkInterfaces'][0]['networkIP']
         output=output+externalIP+':5000,'
 
 output=output[:-1]

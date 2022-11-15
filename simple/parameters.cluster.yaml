@@ -2,7 +2,6 @@ imports:
   - path: deployment.py
   - path: cluster.py
   - path: core.sh
-  - path: parseCoreMembers.py
 
 resources:
   - name: deployment
@@ -18,7 +17,3 @@ resources:
       graphDataScienceLicenseKey: None
       installBloom: False
       bloomLicenseKey: None
-outputs:
-  ip:
-    description: Reference to ip address of your new cluster
-    type: string

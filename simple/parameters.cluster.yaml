@@ -18,3 +18,7 @@ resources:
       graphDataScienceLicenseKey: None
       installBloom: False
       bloomLicenseKey: None
+outputs:
+  ip:
+    description: Reference to ip address of your new cluster
+    type: string

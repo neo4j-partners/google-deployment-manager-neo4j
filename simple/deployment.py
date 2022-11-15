@@ -14,6 +14,7 @@ def GenerateConfig(context):
         'type': 'compute.v1.firewall',
         'properties': {
             'sourceRanges': ['0.0.0.0/0'],
+            'targetTags': [context.env['deployment'] + '-ext'],
             'allowed': [{
                 'IPProtocol': 'tcp',
                 'ports': ['7473', '7474', '7687', '5000', '6000', '7000', '7688', '2003', '2004', '3637', '5005']

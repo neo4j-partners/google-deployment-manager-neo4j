@@ -1,9 +1,13 @@
 imports:
-    - path: cluster.py
+    - path: loadbalancer.py
+    - path: instance_group.py
+    - path: standalone_ip_address.py
+    - path: startup_waiter.py
+    - path: firewall.py
 
 info:
     version: 5.1.0
-    title: Neo4j Enterprise Edition
+    title: Neo4j Enterprise Edition Database Deployment
 
 properties:
     region:
@@ -37,11 +41,9 @@ properties:
     bloomLicenseKey:
         type: string
         default: 'None'
+    public_ip:
+        type: string
 
 outputs:
-    deployment:
-        type: string
-    project:
-        type: string
     ip:
         type: string

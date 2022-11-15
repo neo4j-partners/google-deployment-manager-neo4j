@@ -18,7 +18,7 @@ def GenerateConfig(context):
             'properties': {
                 'machineType': context.properties['nodeType'],
                 'tags': {
-                    'items': [prefix + '-ext'],
+                    'items': [prefix + '-external', prefix + '-internal'],
                 },
                 'networkInterfaces': [{
                     'network': 'https://www.googleapis.com/compute/v1/projects/' + context.env['project'] + '/global/networks/default',

@@ -17,3 +17,6 @@ resources:
       graphDataScienceLicenseKey: None
       installBloom: False
       bloomLicenseKey: None
+#outputs:
+#  - name: ip
+#    value: $(ref.deployment.ip)

@@ -4,6 +4,7 @@ echo "Running core.sh"
 
 echo "Using the settings:"
 echo deployment \'$deployment\'
+echo region \'$region\'
 echo adminPassword \'$adminPassword\'
 echo nodeCount \'$nodeCount\'
 echo graphDatabaseVersion \'$graphDatabaseVersion\'
@@ -73,11 +74,9 @@ extension_config() {
     echo "dbms.security.procedures.allowlist=apoc.*,gds.*,bloom.*" >>/etc/neo4j/neo4j.conf
 }
 build_neo4j_conf_file() {
-    local -r nodeExternalIP="$(curl -H "Metadata-Flavor: Google" http://metadata/computeMetadata/v1/instance/network-interfaces/0/access-configs/0/external-ip)"
     local -r privateIP="$(hostname -i | awk '{print $NF}')"
     echo "Configuring network in neo4j.conf..."
     sed -i 's/#server.default_listen_address=0.0.0.0/server.default_listen_address=0.0.0.0/g' /etc/neo4j/neo4j.conf
-    sed -i s/#server.default_advertised_address=localhost/server.default_advertised_address="${nodeExternalIP}"/g /etc/neo4j/neo4j.conf
     sed -i s/#server.discovery.advertised_address=:5000/server.discovery.advertised_address="${privateIP}":5000/g /etc/neo4j/neo4j.conf
     sed -i s/#server.cluster.advertised_address=:6000/server.cluster.advertised_address="${privateIP}":6000/g /etc/neo4j/neo4j.conf
     sed -i s/#server.cluster.raft.advertised_address=:7000/server.cluster.raft.advertised_address="${privateIP}":7000/g /etc/neo4j/neo4j.conf
@@ -86,7 +85,7 @@ build_neo4j_conf_file() {
     sed -i s/#server.routing.listen_address=0.0.0.0:7688/server.routing.listen_address="${privateIP}":7688/g /etc/neo4j/neo4j.conf
     sed -i s/#server.cluster.listen_address=:6000/server.cluster.listen_address="${privateIP}":6000/g /etc/neo4j/neo4j.conf
     sed -i s/#server.cluster.raft.listen_address=:7000/server.cluster.raft.listen_address="${privateIP}":7000/g /etc/neo4j/neo4j.conf
-    sed -i s/#server.bolt.listen_address=:7687/server.bolt.listen_address="${privateIP}":7687/g /etc/neo4j/neo4j.conf
+    sed -i s/#server.bolt.listen_address=:7687/server.bolt.listen_address=0.0.0.0:7687/g /etc/neo4j/neo4j.conf
     sed -i s/#server.bolt.advertised_address=:7687/server.bolt.advertised_address="${privateIP}":7687/g /etc/neo4j/neo4j.conf
     neo4j-admin server memory-recommendation >>/etc/neo4j/neo4j.conf
     echo "server.metrics.enabled=true" >>/etc/neo4j/neo4j.conf
@@ -97,14 +96,27 @@ build_neo4j_conf_file() {
     echo "dbms.routing.default_router=SERVER" >>/etc/neo4j/neo4j.conf
     if [[ ${nodeCount} == 1 ]]; then
         echo "Running on a single node."
+        local -r nodeExternalIP="$(curl -H "Metadata-Flavor: Google" http://metadata/computeMetadata/v1/instance/network-interfaces/0/access-configs/0/external-ip)"
+        sed -i s/#server.default_advertised_address=localhost/server.default_advertised_address="${nodeExternalIP}"/g /etc/neo4j/neo4j.conf
+
     else
         echo "Running on multiple nodes.  Configuring membership in neo4j.conf..."
+        local -r httpIP=$(gcloud compute forwarding-rules describe "${deployment}-http-forwardingrule" --format="value(IPAddress)" --region ${region})
+#        local -r boltIP=$(gcloud compute forwarding-rules describe "${deployment}-bolt-forwardingrule" --format="value(IPAddress)" --region ${region})
+        sed -i s/#server.default_advertised_address=localhost/server.default_advertised_address="${httpIP}"/g /etc/neo4j/neo4j.conf
+#        sed -i s/#server.bolt.advertised_address=:7687/server.bolt.advertised_address="${boltIP}":7687/g /etc/neo4j/neo4j.conf
+
         sed -i s/#initial.dbms.default_primaries_count=1/initial.dbms.default_primaries_count=3/g /etc/neo4j/neo4j.conf
         sed -i s/#initial.dbms.default_secondaries_count=0/initial.dbms.default_secondaries_count="$(expr ${nodeCount} - 3)"/g /etc/neo4j/neo4j.conf
         sed -i s/#server.bolt.listen_address=:7687/server.bolt.listen_address="${privateIP}":7687/g /etc/neo4j/neo4j.conf
         echo "dbms.cluster.minimum_initial_system_primaries_count=${nodeCount}" >>/etc/neo4j/neo4j.conf
         coreMembers=$(python3 parseCoreMembers.py "${deployment}")
-        sed -i s/#dbms.cluster.discovery.endpoints=localhost:5000,localhost:5001,localhost:5002/dbms.cluster.discovery.endpoints=${coreMembers}/g /etc/neo4j/neo4j.conf
+        local clusterMembers
+        for ip in $(gcloud compute instances list --format "value(networkInterfaces[0].networkIP.list())" --filter "labels.goog-dm: ${deployment}"); do
+            local member="${ip}:5000"
+            clusterMembers=${clusterMembers}${clusterMembers:+,}${member}
+        done
+        sed -i s/#dbms.cluster.discovery.endpoints=localhost:5000,localhost:5001,localhost:5002/dbms.cluster.discovery.endpoints=${clusterMembers}/g /etc/neo4j/neo4j.conf
     fi
 }
 start_neo4j() {

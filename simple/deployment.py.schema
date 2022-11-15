@@ -43,3 +43,5 @@ outputs:
         type: string
     project:
         type: string
+    ip:
+        type: string

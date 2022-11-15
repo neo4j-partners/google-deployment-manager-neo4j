@@ -3,7 +3,7 @@ imports:
 
 info:
     version: 5.1.0
-    title: Neo4j Enterprise Edition
+    title: Instance group for Neo4j Database
 
 properties:
     region:
@@ -37,6 +37,6 @@ properties:
     bloomLicenseKey:
         type: string
         default: 'None'
-
 outputs:
-    - ip:
+    name:
+        type: string

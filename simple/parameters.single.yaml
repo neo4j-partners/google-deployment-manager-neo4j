@@ -2,7 +2,6 @@ imports:
   - path: deployment.py
   - path: cluster.py
   - path: core.sh
-  - path: parseCoreMembers.py
 
 resources:
   - name: deployment

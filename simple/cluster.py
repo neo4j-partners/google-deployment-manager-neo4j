@@ -6,8 +6,10 @@ def GenerateConfig(context):
     healthcheck_http_name = prefix + '-http-healthcheck'
     forwardingrule_name = prefix + '-http-forwardingrule'
     loadbalancer_name = prefix + '-http-loadbalancer'
-    instance_template_name = context.env['deployment'] + '-cluster' + '-it'
-    igm_name = context.env['deployment'] + '-cluster' + '-igm'
+    instance_template_name = prefix + '-cluster' + '-it'
+    igm_name = prefix + '-cluster' + '-igm'
+    startup_waiter_name = prefix + '-startup-waiter'
+    startup_config_name = prefix + '-startup-config'
 
     instanceTemplate = {
         'name': instance_template_name,
@@ -44,7 +46,8 @@ def GenerateConfig(context):
                         'https://www.googleapis.com/auth/cloud.useraccounts.readonly',
                         'https://www.googleapis.com/auth/devstorage.read_only',
                         'https://www.googleapis.com/auth/logging.write',
-                        'https://www.googleapis.com/auth/monitoring.write'
+                        'https://www.googleapis.com/auth/monitoring.write',
+                        'https://www.googleapis.com/auth/cloudruntimeconfig'
                     ]
                 }],
                 'labels': {
@@ -97,13 +100,42 @@ def GenerateConfig(context):
             'loadBalancingScheme': 'EXTERNAL',
         }
     }
-    config={}
-    config['resources'] = []
+    startup_config = {
+        'name': startup_config_name,
+        'type': 'runtimeconfig.v1beta1.config',
+        'properties': {
+            'config': startup_config_name
+        }
+    }
+    startup_waiter = {
+        'name': startup_waiter_name,
+        'type': 'runtimeconfig.v1beta1.waiter',
+        'properties': {
+            'waiter': startup_waiter_name,
+            'parent': '$(ref.' + startup_config_name + '.name)',
+            'timeout': '420s',
+            'success': {
+                'cardinality': {
+                    'path': '/success',
+                    'number': context.properties['nodeCount']
+                }
+            },
+            'failure': {
+                'cardinality': {
+                    'path': '/failure',
+                    'number': 1
+                }
+            }
+        }
+    }
+    config = {'resources': []}
     config['resources'].append(healthcheck_http)
     config['resources'].append(loadbalancer)
     config['resources'].append(forwarding_rule)
     config['resources'].append(instanceTemplate)
     config['resources'].append(instanceGroupManager)
+    config['resources'].append(startup_config)
+    config['resources'].append(startup_waiter)
 
     config['outputs'] = []
     config['outputs'].append({
@@ -116,8 +148,6 @@ def GenerateConfig(context):
 def GenerateStartupScript(context):
     script = '#!/usr/bin/env bash\n\n'
 
-    script+= 'echo "' + context.imports['parseCoreMembers.py'] + '">parseCoreMembers.py' + '\n'
-
     script += 'deployment="' + context.env['deployment'] + '"\n'
     script += 'adminPassword="' + context.properties['adminPassword'] + '"\n'
     script += 'nodeCount="' + str(context.properties['nodeCount']) + '"\n'
@@ -127,6 +157,6 @@ def GenerateStartupScript(context):
     script += 'installBloom="' + str(context.properties['installBloom']) + '"\n'
     script += 'bloomLicenseKey="' + context.properties['bloomLicenseKey'] + '"\n'
     script += 'region="' + context.properties['region'] + '"\n'
-    script+= context.imports['core.sh']
+    script += context.imports['core.sh']
 
     return script

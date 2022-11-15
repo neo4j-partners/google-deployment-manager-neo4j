@@ -1,0 +1,9 @@
+info:
+    version: 5.1.0
+    title: Firewall for Neo4j ports
+
+properties:
+    external_firewall_name:
+        type: string
+    internal_firewall_name:
+        type: string

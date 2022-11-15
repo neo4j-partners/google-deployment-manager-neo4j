@@ -1,0 +1,13 @@
+info:
+    version: 5.1.0
+    title: Wait until Neo4j instance ready
+
+properties:
+    startup_config_name:
+        type: string
+    startup_waiter_name:
+        type: string
+    nodeCount:
+        type: integer
+
+

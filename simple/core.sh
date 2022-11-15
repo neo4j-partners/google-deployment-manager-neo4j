@@ -14,14 +14,19 @@ echo installBloom \'$installBloom\'
 echo bloomLicenseKey \'$bloomLicenseKey\'
 readonly nodeExternalIP="$(curl -H "Metadata-Flavor: Google" http://metadata/computeMetadata/v1/instance/network-interfaces/0/access-configs/0/external-ip)"
 
-echo Turning off firewalld
-systemctl stop firewalld
-systemctl disable firewalld
-
 configure_firewalld() {
+    echo Configuring local firewall
     firewall-cmd --zone=public --permanent --add-port=7474/tcp
     firewall-cmd --zone=public --permanent --add-port=7687/tcp
     firewall-cmd --zone=public --permanent --add-port=6362/tcp
+    firewall-cmd --zone=public --permanent --add-port=7473/tcp
+    firewall-cmd --zone=public --permanent --add-port=2003/tcp
+    firewall-cmd --zone=public --permanent --add-port=2004/tcp
+    firewall-cmd --zone=public --permanent --add-port=3637/tcp
+    firewall-cmd --zone=public --permanent --add-port=5000/tcp
+    firewall-cmd --zone=public --permanent --add-port=6000/tcp
+    firewall-cmd --zone=public --permanent --add-port=7000/tcp
+    firewall-cmd --zone=public --permanent --add-port=7688/tcp
 }
 
 install_neo4j_from_yum() {
@@ -149,6 +154,7 @@ set_runtime_config_failure() {
 }
 
 trap set_runtime_config_failure ERR
+configure_firewalld
 install_neo4j_from_yum
 install_apoc_plugin
 extension_config

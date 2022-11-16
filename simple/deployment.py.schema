@@ -28,7 +28,7 @@ properties:
         type: string
     graphDatabaseVersion:
         type: string
-        default: '4.4.11'
+        default: '5.1.0'
     installGraphDataScience:
         type: boolean
         default: False

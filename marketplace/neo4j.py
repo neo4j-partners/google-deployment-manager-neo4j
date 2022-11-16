@@ -1,7 +1,5 @@
 def GenerateConfig(context):
-    config={}
-    config['resources'] = []
-    config['outputs'] = []
+    config = {'resources': [], 'outputs': []}
 
     deployment = {
         'name': 'deployment',
@@ -20,5 +18,9 @@ def GenerateConfig(context):
         }
     }
     config['resources'].append(deployment)
+    config['outputs'].append({
+        'name': 'url',
+        'value': ''.join(['http://', '$(ref.deployment.ip)', ':7474'])
+    })
 
     return config

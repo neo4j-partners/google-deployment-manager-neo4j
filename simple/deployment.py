@@ -45,7 +45,6 @@ def GenerateConfig(context):
             'type': 'loadbalancer.py',
             'properties': {
                 'instance_group': '$(ref.instance-group.name)',
-                # 'instance_group': '$(ref.' + igm_name + '.instanceGroup)',
                 'region': context.properties['region'],
             }
         }

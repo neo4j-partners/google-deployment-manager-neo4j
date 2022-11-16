@@ -1,12 +1,14 @@
 imports:
   - path: deployment.py
-  - path: cluster.py
-  - path: core.sh
-  - path: parseCoreMembers.py
+  - path: loadbalancer.py
+  - path: instance_group.py
+  - path: standalone_ip_address.py
+  - path: startup_waiter.py
+  - path: firewall.py
 
 info:
   version: 5.1.0
-  title: Neo4j Enterprise Edition
+  title: Neo4j Enterprise Edition Database Deployment
 
 properties:
   region:
@@ -29,20 +31,20 @@ properties:
     type: string
     default: '4.4.11'
   installGraphDataScience:
-    type: string
-    default: 'True'
+    type: boolean
+    default: False
   graphDataScienceLicenseKey:
     type: string
     default: 'None'
   installBloom:
-    type: string
-    default: 'True'
+    type: boolean
+    default: False
   bloomLicenseKey:
     type: string
     default: 'None'
 
 outputs:
-  deployment:
+  url:
     type: string
-  project:
-    type: string
+    description: URL to access Neo4j Browser
+

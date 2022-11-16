@@ -37,6 +37,9 @@ properties:
     bloomLicenseKey:
         type: string
         default: 'None'
+    public_ip:
+        type: string
+
 outputs:
     name:
         type: string

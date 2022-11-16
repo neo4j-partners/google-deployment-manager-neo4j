@@ -14,7 +14,7 @@ def GenerateConfig(context):
         'type': 'firewall.py',
         'properties': {
             'external_firewall_name': context.env['deployment'] + '-external',
-            'internal_firewall_name': context.env['deployment'] + '-external',
+            'internal_firewall_name': context.env['deployment'] + '-internal',
         }
     }
 

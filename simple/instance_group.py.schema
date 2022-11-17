@@ -39,6 +39,10 @@ properties:
         default: 'None'
     public_ip:
         type: string
+    network_ref:
+        type: string
+    subnet_ref:
+        type: string
 
 outputs:
     name:

@@ -1,7 +1,9 @@
-def GenerateConfig(context):
+def generate_config(context):
+    prefix = context.env['deployment']
+    public_ip_name = prefix + '-standalone-ip'
     properties = context.properties
     public_ip_addresss = {
-        'name': properties['public_ip_name'],
+        'name': public_ip_name,
         'type': 'compute.v1.address',
         'properties': {
             'region': properties['region']
@@ -12,6 +14,6 @@ def GenerateConfig(context):
 
     config['outputs'].append({
         'name': 'ip',
-        'value': '$(ref.' + properties['public_ip_name'] + '.address)'
+        'value': '$(ref.' + public_ip_name + '.address)'
     })
     return config

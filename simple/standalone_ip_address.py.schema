@@ -6,8 +6,6 @@ properties:
     region:
         type: string
         default: us-east1
-    public_ip_name:
-        type: string
 outputs:
     ip:
         type: string

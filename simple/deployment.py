@@ -1,13 +1,9 @@
-
-def GenerateConfig(context):
+def generate_config(context):
     prefix = context.env['deployment']
     instance_template_name = prefix + '-cluster-it'
     standalone_instance_template_name = prefix + '-standalone-it'
-    public_ip_name = prefix + '-standalone-ip'
     igm_name = prefix + '-cluster' + '-igm'
     standalone_igm_name = prefix + '-standalone' + '-igm'
-    startup_waiter_name = prefix + '-startup-waiter'
-    startup_config_name = prefix + '-startup-config'
 
     network = {
         'name': 'network',
@@ -21,10 +17,8 @@ def GenerateConfig(context):
             'dependsOn': ['network'],
         },
         'properties': {
-            'external_firewall_name': context.env['deployment'] + '-external',
-            'internal_firewall_name': context.env['deployment'] + '-internal',
-            'network_ref': '$(ref.network.network_ref)',
-            'subnet_cidr': '$(ref.network.subnet_cidr)'
+            'networkRef': '$(ref.network.networkRef)',
+            'subnetCidr': '$(ref.network.subnetCidr)'
         }
     }
 
@@ -35,8 +29,6 @@ def GenerateConfig(context):
             'dependsOn': ['instance-group'],
         },
         'properties': {
-            'startup_config_name': startup_config_name,
-            'startup_waiter_name': startup_waiter_name,
             'nodeCount': context.properties['nodeCount']
         }
     }
@@ -74,11 +66,10 @@ def GenerateConfig(context):
 
     else:
         public_ip_addresss = {
-            'name': 'standalone_ip_address',
+            'name': 'standalone-ip-address',
             'type': 'standalone_ip_address.py',
             'properties': {
                 'region': context.properties['region'],
-                'public_ip_name': public_ip_name
             }
         }
         instance_group = {
@@ -88,7 +79,7 @@ def GenerateConfig(context):
                 'dependsOn': ['network'],
             },
             'properties': instance_group_properties(context, standalone_igm_name, standalone_instance_template_name,
-                                                    public_ip='$(ref.standalone_ip_address.ip)')
+                                                    public_ip='$(ref.standalone-ip-address.ip)')
         }
 
         config['resources'].append(instance_group)
@@ -96,7 +87,7 @@ def GenerateConfig(context):
 
         config['outputs'].append({
             'name': 'ip',
-            'value': '$(ref.standalone_ip_address.ip)'
+            'value': '$(ref.standalone-ip-address.ip)'
         })
     return config
 
@@ -104,11 +95,12 @@ def GenerateConfig(context):
 def instance_group_properties(context, igm_name, instance_template_name, public_ip=''):
     return {
         'region': context.properties['region'],
-        'public_ip': public_ip,
-        'network_ref': '$(ref.network.network_ref)',
-        'subnet_ref': '$(ref.network.subnet_ref)',
-        'instance_template_name': instance_template_name,
-        'instance_group_manager_name': igm_name,
+        'publicIp': public_ip,
+        'networkRef': '$(ref.network.networkRef)',
+        'subnetRef': '$(ref.network.subnetRef)',
+        'instanceTemplateName': instance_template_name,
+        'instanceGroupManagerName': igm_name,
+        'startupConfigName': '$(ref.startup-waiter.configName)',
         'nodeCount': context.properties['nodeCount'],
         'nodeType': context.properties['nodeType'],
         'diskSize': context.properties['diskSize'],

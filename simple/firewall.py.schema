@@ -3,11 +3,7 @@ info:
     title: Firewall for Neo4j ports
 
 properties:
-    external_firewall_name:
+    networkRef:
         type: string
-    internal_firewall_name:
-        type: string
-    network_ref:
-        type: string
-    subnet_cidr:
+    subnetCidr:
         type: string

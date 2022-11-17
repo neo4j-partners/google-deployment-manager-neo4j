@@ -1,4 +1,4 @@
-def GenerateConfig(context):
+def generate_config(context):
     properties = context.properties
     prefix = context.env['deployment']
     healthcheck_http_name = prefix + '-http-healthcheck'

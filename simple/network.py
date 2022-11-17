@@ -1,6 +1,6 @@
-def GenerateConfig(context):
+def generate_config(context):
     region = context.properties['region']
-    prefix = region + '-' + context.env['deployment']
+    prefix = context.env['deployment']
 
     network_name = prefix + '-network'
     subnet_name = prefix + '-subnetwork'
@@ -31,15 +31,15 @@ def GenerateConfig(context):
     config['resources'].append(subnet)
 
     config['outputs'].append({
-        'name': 'network_ref',
+        'name': 'networkRef',
         'value': network_ref
     })
     config['outputs'].append({
-        'name': 'subnet_ref',
+        'name': 'subnetRef',
         'value': subnet_ref
     })
     config['outputs'].append({
-        'name': 'subnet_cidr',
+        'name': 'subnetCidr',
         'value': subnet_cidr
     })
     return config

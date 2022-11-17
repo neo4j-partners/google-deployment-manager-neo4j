@@ -6,6 +6,7 @@ def GenerateConfig(context):
         'type': 'compute.v1.firewall',
         'properties': {
             'sourceRanges': ['0.0.0.0/0'],
+            'network': properties['network_ref'],
             'targetTags': [properties['external_firewall_name']],
             'allowed': [{
                 'IPProtocol': 'tcp',
@@ -18,7 +19,8 @@ def GenerateConfig(context):
         'name': properties['internal_firewall_name'],
         'type': 'compute.v1.firewall',
         'properties': {
-            'sourceRanges': ['10.0.0.0/8'],
+            'sourceRanges': [properties['subnet_cidr']],
+            'network': properties['network_ref'],
             'targetTags': [properties['internal_firewall_name']],
             'allowed': [{
                 'IPProtocol': 'tcp',

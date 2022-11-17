@@ -9,18 +9,31 @@ def GenerateConfig(context):
     startup_waiter_name = prefix + '-startup-waiter'
     startup_config_name = prefix + '-startup-config'
 
+    network = {
+        'name': 'network',
+        'type': 'network.py',
+    }
+
     firewall = {
         'name': 'firewall',
         'type': 'firewall.py',
+        'metadata': {
+            'dependsOn': ['network'],
+        },
         'properties': {
             'external_firewall_name': context.env['deployment'] + '-external',
             'internal_firewall_name': context.env['deployment'] + '-internal',
+            'network_ref': '$(ref.network.network_ref)',
+            'subnet_cidr': '$(ref.network.subnet_cidr)'
         }
     }
 
     startup_waiter = {
         'name': 'startup-waiter',
         'type': 'startup_waiter.py',
+        'metadata': {
+            'dependsOn': ['instance-group'],
+        },
         'properties': {
             'startup_config_name': startup_config_name,
             'startup_waiter_name': startup_waiter_name,
@@ -28,14 +41,18 @@ def GenerateConfig(context):
         }
     }
     config = {'resources': [], 'outputs': []}
-    config['resources'].append(startup_waiter)
+    config['resources'].append(network)
     config['resources'].append(firewall)
+    config['resources'].append(startup_waiter)
 
     if context.properties['nodeCount'] > 1:
 
         instance_group = {
             'name': 'instance-group',
             'type': 'instance_group.py',
+            'metadata': {
+                'dependsOn': ['network'],
+            },
             'properties': instance_group_properties(context, igm_name, instance_template_name)
         }
         config['resources'].append(instance_group)
@@ -67,8 +84,11 @@ def GenerateConfig(context):
         instance_group = {
             'name': 'instance-group',
             'type': 'instance_group.py',
+            'metadata': {
+                'dependsOn': ['network'],
+            },
             'properties': instance_group_properties(context, standalone_igm_name, standalone_instance_template_name,
-                                                    '$(ref.standalone_ip_address.ip)')
+                                                    public_ip='$(ref.standalone_ip_address.ip)')
         }
 
         config['resources'].append(instance_group)
@@ -81,10 +101,12 @@ def GenerateConfig(context):
     return config
 
 
-def instance_group_properties(context, igm_name, instance_template_name, public_ip=None):
+def instance_group_properties(context, igm_name, instance_template_name, public_ip=''):
     return {
         'region': context.properties['region'],
         'public_ip': public_ip,
+        'network_ref': '$(ref.network.network_ref)',
+        'subnet_ref': '$(ref.network.subnet_ref)',
         'instance_template_name': instance_template_name,
         'instance_group_manager_name': igm_name,
         'nodeCount': context.properties['nodeCount'],

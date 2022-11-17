@@ -13,8 +13,10 @@ def GenerateConfig(context):
                     'items': [prefix + '-external', prefix + '-internal'],
                 },
                 'networkInterfaces': [{
-                    'network': 'https://www.googleapis.com/compute/v1/projects/' + context.env[
-                        'project'] + '/global/networks/default',
+                    'network':
+                        properties['network_ref'],
+                    'subnetwork':
+                        properties['subnet_ref'],
                     'accessConfigs': [{
                         'name': 'External NAT',
                         'type': 'ONE_TO_ONE_NAT'

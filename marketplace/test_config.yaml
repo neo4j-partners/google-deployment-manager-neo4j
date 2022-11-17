@@ -1,8 +1,12 @@
 imports:
   - path: neo4j.py
-  - path: cluster.py
+  - path: deployment.py
+  - path: loadbalancer.py
+  - path: instance_group.py
+  - path: standalone_ip_address.py
+  - path: startup_waiter.py
+  - path: firewall.py
   - path: core.sh
-  - path: parseCoreMembers.py
 
 resources:
   - name: neo4j
@@ -18,3 +22,7 @@ resources:
       graphDataScienceLicenseKey: None
       installBloom: True
       bloomLicenseKey: None
+outputs:
+  - name: url
+    description: URL to access Neo4j Browser
+    value: $(ref.neo4j.url)

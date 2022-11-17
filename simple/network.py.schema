@@ -1,0 +1,16 @@
+info:
+    version: 5.1.0
+    title: Network and subnet for Neo4j deployment
+
+properties:
+    region:
+        type: string
+        default: us-east1
+
+outputs:
+    network_ref:
+        type: string
+    subnet_ref:
+        type: string
+    subnet_cidr:
+        type: string

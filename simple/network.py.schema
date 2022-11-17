@@ -8,9 +8,9 @@ properties:
         default: us-east1
 
 outputs:
-    network_ref:
+    networkRef:
         type: string
-    subnet_ref:
+    subnetRef:
         type: string
-    subnet_cidr:
+    subnetCidr:
         type: string

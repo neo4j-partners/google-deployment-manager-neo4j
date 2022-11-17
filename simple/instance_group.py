@@ -1,10 +1,10 @@
-def GenerateConfig(context):
+def generate_config(context):
     sourceImage = 'projects/neo4j-aura-gcp/global/images/neo4j-enterprise-edition-byol-v20220418'
     properties = context.properties
     prefix = context.env['deployment']
 
     instance_template = {
-        'name': properties['instance_template_name'],
+        'name': properties['instanceTemplateName'],
         'type': 'compute.v1.instanceTemplate',
         'properties': {
             'properties': {
@@ -14,9 +14,9 @@ def GenerateConfig(context):
                 },
                 'networkInterfaces': [{
                     'network':
-                        properties['network_ref'],
+                        properties['networkRef'],
                     'subnetwork':
-                        properties['subnet_ref'],
+                        properties['subnetRef'],
                     'accessConfigs': [{
                         'name': 'External NAT',
                         'type': 'ONE_TO_ONE_NAT'
@@ -51,16 +51,16 @@ def GenerateConfig(context):
             }
         }
     }
-    if context.properties['public_ip']:
-        instance_template['properties']['properties']['networkInterfaces'][0]['accessConfigs'][0]['natIP'] = context.properties['public_ip']
+    if context.properties['publicIp']:
+        instance_template['properties']['properties']['networkInterfaces'][0]['accessConfigs'][0]['natIP'] = context.properties['publicIp']
 
     instance_group_manager = {
-        'name': properties['instance_group_manager_name'],
+        'name': properties['instanceGroupManagerName'],
         'type': 'compute.v1.regionInstanceGroupManager',
         'properties': {
             'region': context.properties['region'],
             'baseInstanceName': context.env['deployment'] + '-cluster' + '-instance',
-            'instanceTemplate': '$(ref.' + properties['instance_template_name'] + '.selfLink)',
+            'instanceTemplate': '$(ref.' + properties['instanceTemplateName'] + '.selfLink)',
             'targetSize': context.properties['nodeCount']
         }
     }
@@ -70,7 +70,7 @@ def GenerateConfig(context):
     config['resources'].append(instance_group_manager)
     config['outputs'].append({
         'name': 'name',
-        'value': '$(ref.' + properties['instance_group_manager_name'] + '.instanceGroup)'
+        'value': '$(ref.' + properties['instanceGroupManagerName'] + '.instanceGroup)'
     })
     return config
 
@@ -86,6 +86,7 @@ def generate_startup_script(context):
     script += 'installBloom="' + str(context.properties['installBloom']) + '"\n'
     script += 'bloomLicenseKey="' + context.properties['bloomLicenseKey'] + '"\n'
     script += 'region="' + context.properties['region'] + '"\n'
+    script += 'startupConfigName="' + context.properties['startupConfigName'] + '"\n'
     script += context.imports['core.sh']
 
     return script

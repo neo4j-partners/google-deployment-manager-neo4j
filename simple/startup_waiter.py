@@ -1,24 +1,28 @@
-def GenerateConfig(context):
+def generate_config(context):
+    prefix = context.env['deployment']
+    startup_waiter_name = prefix + '-startup-waiter'
+    startup_config_name = prefix + '-startup-config'
     properties = context.properties
+
     startup_config = {
-        'name': properties['startup_config_name'],
+        'name': startup_config_name,
         'type': 'runtimeconfig.v1beta1.config',
         'properties': {
-            'config': properties['startup_config_name']
+            'config': startup_config_name
         }
     }
 
     startup_waiter = {
-        'name': properties['startup_waiter_name'],
+        'name': startup_waiter_name,
         'type': 'runtimeconfig.v1beta1.waiter',
         'properties': {
-            'waiter': properties['startup_waiter_name'],
-            'parent': '$(ref.' + properties['startup_config_name'] + '.name)',
+            'waiter': startup_waiter_name,
+            'parent': '$(ref.' + startup_config_name + '.name)',
             'timeout': '420s',
             'success': {
                 'cardinality': {
                     'path': '/success',
-                    'number': context.properties['nodeCount']
+                    'number': properties['nodeCount']
                 }
             },
             'failure': {
@@ -32,5 +36,8 @@ def GenerateConfig(context):
     config = {'resources': [], 'outputs': []}
     config['resources'].append(startup_config)
     config['resources'].append(startup_waiter)
-
+    config['outputs'].append({
+        'name': 'configName',
+        'value': startup_config_name
+    })
     return config

@@ -37,11 +37,17 @@ properties:
     bloomLicenseKey:
         type: string
         default: 'None'
-    public_ip:
+    publicIp:
         type: string
-    network_ref:
+    networkRef:
         type: string
-    subnet_ref:
+    subnetRef:
+        type: string
+    startupConfigName:
+        type: string
+    instanceTemplateName:
+        type: string
+    instanceGroupManagerName:
         type: string
 
 outputs:

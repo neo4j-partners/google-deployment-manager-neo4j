@@ -5,6 +5,7 @@ imports:
   - path: standalone_ip_address.py
   - path: startup_waiter.py
   - path: firewall.py
+  - path: network.py
 
 info:
   version: 5.1.0

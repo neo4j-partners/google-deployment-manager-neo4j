@@ -7,7 +7,6 @@ echo deployment \'$deployment\'
 echo region \'$region\'
 echo adminPassword \'$adminPassword\'
 echo nodeCount \'$nodeCount\'
-echo graphDatabaseVersion \'$graphDatabaseVersion\'
 echo installGraphDataScience \'$installGraphDataScience\'
 echo graphDataScienceLicenseKey \'$graphDataScienceLicenseKey\'
 echo installBloom \'$installBloom\'
@@ -46,6 +45,17 @@ install_neo4j_from_yum() {
     sed -i '/\[rhui-rhel-8-for-x86_64-supplementary-rhui-rpms\]/,/^ *\[/ s/enabled=1/enabled=0/' /etc/yum.repos.d/rh-cloud.repo
     sed -i '/\[rhui-rhel-8-for-x86_64-supplementary-rhui-source-rpms\]/,/^ *\[/ s/enabled=1/enabled=0/' /etc/yum.repos.d/rh-cloud.repo
 
+    echo Installing jq
+    yum -y install jq
+
+    echo Resolving latest Neo4j 5 release
+    if ! curl --fail http://versions.neo4j-templates.com/target.json; then
+        echo "Failed to resolve Neo4j version from http://versions.neo4j-templates.com, using latest"
+        local -r graphDatabaseVersion="neo4j-enterprise"
+    else
+        local -r graphDatabaseVersion="neo4j-enterprise-$(curl http://versions.neo4j-templates.com/target.json | jq -r '.gcp."5"')"
+    fi
+
     echo Adding neo4j yum repo...
     rpm --import https://debian.neo4j.com/neotechnology.gpg.key
     cat <<EOF >/etc/yum.repos.d/neo4j.repo
@@ -58,7 +68,7 @@ EOF
 
     echo "Installing Graph Database..."
     export NEO4J_ACCEPT_LICENSE_AGREEMENT=yes
-    yum -y install "neo4j-enterprise-${graphDatabaseVersion}"
+    yum -y install "${graphDatabaseVersion}"
     systemctl enable neo4j
 }
 install_apoc_plugin() {
@@ -124,10 +134,7 @@ build_neo4j_conf_file() {
     else
         echo "Running on multiple nodes.  Configuring membership in neo4j.conf..."
         local -r httpIP=$(gcloud compute forwarding-rules describe "${deployment}-http-forwardingrule" --format="value(IPAddress)" --region ${region})
-        #        local -r boltIP=$(gcloud compute forwarding-rules describe "${deployment}-bolt-forwardingrule" --format="value(IPAddress)" --region ${region})
         sed -i s/#server.default_advertised_address=localhost/server.default_advertised_address="${httpIP}"/g /etc/neo4j/neo4j.conf
-        #        sed -i s/#server.bolt.advertised_address=:7687/server.bolt.advertised_address="${boltIP}":7687/g /etc/neo4j/neo4j.conf
-
         sed -i s/#initial.dbms.default_primaries_count=1/initial.dbms.default_primaries_count=3/g /etc/neo4j/neo4j.conf
         sed -i s/#initial.dbms.default_secondaries_count=0/initial.dbms.default_secondaries_count="$(expr ${nodeCount} - 3)"/g /etc/neo4j/neo4j.conf
         sed -i s/#server.bolt.listen_address=:7687/server.bolt.listen_address="${privateIP}":7687/g /etc/neo4j/neo4j.conf

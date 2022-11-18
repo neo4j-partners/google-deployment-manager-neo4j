@@ -25,11 +25,10 @@ properties:
     diskSize:
         type: integer
         default: 20
+    diskType:
+        type: string
     adminPassword:
         type: string
-    graphDatabaseVersion:
-        type: string
-        default: '5.1.0'
     installGraphDataScience:
         type: boolean
         default: False

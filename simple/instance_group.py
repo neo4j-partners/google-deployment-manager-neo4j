@@ -85,7 +85,6 @@ def generate_startup_script(context):
     script += 'installBloom="' + str(context.properties['installBloom']) + '"\n'
     script += 'bloomLicenseKey="' + context.properties['bloomLicenseKey'] + '"\n'
     script += 'region="' + context.properties['region'] + '"\n'
-    script += 'startupConfigName="' + context.properties['startupConfigName'] + '"\n'
     script += context.imports['core.sh']
 
     return script

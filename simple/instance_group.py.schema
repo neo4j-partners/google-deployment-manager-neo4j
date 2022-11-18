@@ -2,7 +2,7 @@ imports:
     - path: core.sh
 
 info:
-    version: 5.1.0
+    version: 5
     title: Instance group for Neo4j Database
 
 properties:
@@ -41,8 +41,6 @@ properties:
     networkRef:
         type: string
     subnetRef:
-        type: string
-    startupConfigName:
         type: string
     instanceTemplateName:
         type: string

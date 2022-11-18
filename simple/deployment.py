@@ -22,20 +22,9 @@ def generate_config(context):
         }
     }
 
-    startup_waiter = {
-        'name': 'startup-waiter',
-        'type': 'startup_waiter.py',
-        'metadata': {
-            'dependsOn': ['instance-group'],
-        },
-        'properties': {
-            'nodeCount': context.properties['nodeCount']
-        }
-    }
     config = {'resources': [], 'outputs': []}
     config['resources'].append(network)
     config['resources'].append(firewall)
-    config['resources'].append(startup_waiter)
 
     if context.properties['nodeCount'] > 1:
 
@@ -100,7 +89,6 @@ def instance_group_properties(context, igm_name, instance_template_name, public_
         'subnetRef': '$(ref.network.subnetRef)',
         'instanceTemplateName': instance_template_name,
         'instanceGroupManagerName': igm_name,
-        'startupConfigName': '$(ref.startup-waiter.configName)',
         'nodeCount': context.properties['nodeCount'],
         'nodeType': context.properties['nodeType'],
         'diskSize': context.properties['diskSize'],

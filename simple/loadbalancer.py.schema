@@ -1,5 +1,5 @@
 info:
-    version: 5.1.0
+    version: 5
     title: External Load Balancer service for Neo4j Browser and Bolt
 
 required:

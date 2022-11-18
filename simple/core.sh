@@ -11,7 +11,6 @@ echo installGraphDataScience \'$installGraphDataScience\'
 echo graphDataScienceLicenseKey \'$graphDataScienceLicenseKey\'
 echo installBloom \'$installBloom\'
 echo bloomLicenseKey \'$bloomLicenseKey\'
-echo startupConfigName \'$startupConfigName\'
 readonly nodeExternalIP="$(curl -H "Metadata-Flavor: Google" http://metadata/computeMetadata/v1/instance/network-interfaces/0/access-configs/0/external-ip)"
 
 configure_firewalld() {
@@ -155,10 +154,6 @@ start_neo4j() {
         echo "Waiting for cluster to start"
         sleep 5
     done
-    gcloud beta runtime-config configs variables set "success/${nodeExternalIP//./-}" success --config-name "${startupConfigName}"
-}
-set_runtime_config_failure() {
-    gcloud beta runtime-config configs variables set "failure/${nodeExternalIP//./-}" success --config-name "${startupConfigName}"
 }
 
 trap set_runtime_config_failure ERR

@@ -2,12 +2,11 @@ imports:
     - path: loadbalancer.py
     - path: instance_group.py
     - path: standalone_ip_address.py
-    - path: startup_waiter.py
     - path: firewall.py
     - path: network.py
 
 info:
-    version: 5.1.0
+    version: 5
     title: Neo4j Enterprise Edition Database Deployment
 
 properties:

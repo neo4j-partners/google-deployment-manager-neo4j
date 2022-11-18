@@ -8,7 +8,7 @@ imports:
   - path: network.py
 
 info:
-  version: 5.1.0
+  version: 5
   title: Neo4j Enterprise Edition Database Deployment
 required:
   - adminPassword
@@ -21,6 +21,7 @@ properties:
       type: GCE_REGION
   zone:
     type: string
+    default: us-east1-b
     x-googleProperty:
       type: GCE_ZONE
   nodeCount:

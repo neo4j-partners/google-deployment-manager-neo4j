@@ -23,6 +23,12 @@ properties:
     default: us-east1-b
     x-googleProperty:
       type: GCE_ZONE
+  graphDatabaseVersion:
+    type: string
+    enum:
+      - '4.4'
+      - '5'
+    default: '5 '
   nodeCount:
     type: integer
     default: 1

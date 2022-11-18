@@ -1,5 +1,6 @@
 imports:
-    - path: core.sh
+    - path: core-5.sh
+    - path: core-4.4.sh
 
 info:
     version: 5
@@ -24,6 +25,9 @@ properties:
         type: string
     adminPassword:
         type: string
+    graphDatabaseVersion:
+        type: string
+        default: '5'
     installGraphDataScience:
         type: boolean
         default: False

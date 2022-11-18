@@ -13,7 +13,7 @@ description:
         Reach out to our online community.
       showSupportId: false
       url: 'https://support.neo4j.com/hc/en-us'
-  softwareGroups: []
+  softwareGroups: [ ]
   tagline: Neo4j Enterprise Edition
   descriptionHtml: >-
     <p>Neo4j is an open-source, NoSQL, native graph database that provides an
@@ -60,20 +60,25 @@ input:
     - name: region
       title: Region
       section: neo4j
+    - name: zone
+      title: Zone
+      section: neo4j
     - name: nodeCount
       title: Node Count
+      subtext: Specify 1 for a standalone server or a value between 3 and 10 for a cluster.
       section: neo4j
     - name: nodeType
       title: Node Type
+      section: neo4j
+    - name: diskType
+      title: Disk Type
       section: neo4j
     - name: diskSize
       title: Disk Size in GB
       section: neo4j
     - name: adminPassword
       title: Admin Password
-      section: neo4j
-    - name: graphDatabaseVersion
-      title: Graph Database Version
+      validation: Please enter an admin password for the database
       section: neo4j
     - name: installGraphDataScience
       title: Install Graph Data Science
@@ -89,3 +94,16 @@ input:
       section: neo4j
 runtime:
   deployingMessage: Deployment takes several minutes to complete.
+  applicationTable:
+    rows:
+      - label: Neo4j Browser address
+        value: '<a href="{{ outputs().url }}">{{ outputs().url }}</a>'
+      - label: Database region
+        value: '{{ properties().region }}'
+      - label: Database machine type
+        value: '{{ properties().nodeType }}'
+
+  primaryButton:
+    label: Log into the admin panel
+    type: TYPE_URL
+    action: '{{ outputs().url }}'

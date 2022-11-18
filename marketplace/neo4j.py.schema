@@ -10,11 +10,19 @@ imports:
 info:
   version: 5.1.0
   title: Neo4j Enterprise Edition Database Deployment
+required:
+  - adminPassword
 
 properties:
   region:
     type: string
     default: us-east1
+    x-googleProperty:
+      type: GCE_REGION
+  zone:
+    type: string
+    x-googleProperty:
+      type: GCE_ZONE
   nodeCount:
     type: integer
     default: 1
@@ -23,14 +31,29 @@ properties:
   nodeType:
     type: string
     default: n2-standard-4
+    x-googleProperty:
+      type: GCE_MACHINE_TYPE
+      zoneProperty: zone
+      gceMachineType:
+        minCpu: 1
+        minRamGb: 1.690000057220459
+  diskType:
+    type: string
+    default: pd-balanced
+    x-googleProperty:
+      type: GCE_DISK_TYPE
+      zoneProperty: zone
   diskSize:
     type: integer
     default: 20
+    minimum: 10
+    maximum: 10000
+    x-googleProperty:
+      type: GCE_DISK_SIZE
+      gceDiskSize:
+        diskTypeProperty: diskType
   adminPassword:
     type: string
-  graphDatabaseVersion:
-    type: string
-    default: '4.4.11'
   installGraphDataScience:
     type: boolean
     default: False
@@ -48,4 +71,3 @@ outputs:
   url:
     type: string
     description: URL to access Neo4j Browser
-

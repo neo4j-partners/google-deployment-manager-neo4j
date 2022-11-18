@@ -30,7 +30,7 @@ def generate_config(context):
                     'initializeParams': {
                         'sourceImage': sourceImage
                     },
-                    'diskType': 'pd-ssd',
+                    'diskType': context.properties['diskType'],
                     'diskSizeGb': context.properties['diskSize']
                 }],
                 'metadata': {'items': [{'key': 'startup-script', 'value': generate_startup_script(context)}]},
@@ -42,7 +42,7 @@ def generate_config(context):
                         'https://www.googleapis.com/auth/devstorage.read_only',
                         'https://www.googleapis.com/auth/logging.write',
                         'https://www.googleapis.com/auth/monitoring.write',
-                        'https://www.googleapis.com/auth/cloudruntimeconfig'
+                        'https://www.googleapis.com/auth/cloudruntimeconfig',
                     ]
                 }],
                 'labels': {
@@ -80,7 +80,6 @@ def generate_startup_script(context):
     script += 'deployment="' + context.env['deployment'] + '"\n'
     script += 'adminPassword="' + context.properties['adminPassword'] + '"\n'
     script += 'nodeCount="' + str(context.properties['nodeCount']) + '"\n'
-    script += 'graphDatabaseVersion="' + context.properties['graphDatabaseVersion'] + '"\n'
     script += 'installGraphDataScience="' + str(context.properties['installGraphDataScience']) + '"\n'
     script += 'graphDataScienceLicenseKey="' + context.properties['graphDataScienceLicenseKey'] + '"\n'
     script += 'installBloom="' + str(context.properties['installBloom']) + '"\n'

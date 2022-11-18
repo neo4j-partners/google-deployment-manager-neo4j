@@ -28,6 +28,9 @@ properties:
         type: string
     adminPassword:
         type: string
+    graphDatabaseVersion:
+        type: string
+        default: '5'
     installGraphDataScience:
         type: boolean
         default: False

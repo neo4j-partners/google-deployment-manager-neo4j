@@ -94,6 +94,7 @@ def instance_group_properties(context, igm_name, instance_template_name, public_
         'diskSize': context.properties['diskSize'],
         'diskType': context.properties['diskType'],
         'adminPassword': context.properties['adminPassword'],
+        'graphDatabaseVersion': context.properties['graphDatabaseVersion'],
         'installGraphDataScience': context.properties['installGraphDataScience'],
         'graphDataScienceLicenseKey': context.properties['graphDataScienceLicenseKey'],
         'installBloom': context.properties['installBloom'],

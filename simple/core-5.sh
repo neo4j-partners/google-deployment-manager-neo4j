@@ -156,7 +156,6 @@ start_neo4j() {
     done
 }
 
-trap set_runtime_config_failure ERR
 configure_firewalld
 install_neo4j_from_yum
 install_apoc_plugin

@@ -17,7 +17,6 @@ resources:
       nodeType: n2-standard-4
       nodeCount: 3
       diskSize: 20
-      graphDatabaseVersion: 5.1.0
       installGraphDataScience: False
       graphDataScienceLicenseKey: None
       installBloom: False

@@ -5,7 +5,8 @@ imports:
   - path: standalone_ip_address.py
   - path: firewall.py
   - path: network.py
-  - path: core.sh
+  - path: core-5.sh
+  - path: core-4.4.sh
 
 resources:
   - name: deployment
@@ -16,6 +17,7 @@ resources:
       nodeType: n2-standard-8
       nodeCount: 1
       diskSize: 20
+      graphDatabaseVersion: '5'
       installGraphDataScience: True
       graphDataScienceLicenseKey: None
       installBloom: True

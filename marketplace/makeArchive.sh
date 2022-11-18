@@ -11,7 +11,8 @@ cp test_config.yaml tmp
 
 cp ../simple/*.py tmp
 cp ../simple/*.py.schema tmp
-cp ../simple/core.sh tmp
+cp ../simple/core-4.4.sh tmp
+cp ../simple/core-5.sh tmp
 
 cd tmp
 

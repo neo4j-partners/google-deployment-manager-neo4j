@@ -57,6 +57,9 @@ input:
     - name: neo4j
       title: Neo4j
   properties:
+    - name: graphDatabaseVersion
+      title: Graph Database Version
+      section: neo4j
     - name: region
       title: Region
       section: neo4j
@@ -104,6 +107,6 @@ runtime:
         value: '{{ properties().nodeType }}'
 
   primaryButton:
-    label: Log into the admin panel
+    label: Log into the Neo4j Browser
     type: TYPE_URL
     action: '{{ outputs().url }}'

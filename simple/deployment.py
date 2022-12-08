@@ -4,10 +4,13 @@ def generate_config(context):
     standalone_instance_template_name = prefix + '-standalone-it'
     igm_name = prefix + '-cluster' + '-igm'
     standalone_igm_name = prefix + '-standalone' + '-igm'
-
+    region = context.properties['zone'][:-2]
     network = {
         'name': 'network',
         'type': 'network.py',
+        'properties': {
+            'region': region,
+        }
     }
 
     firewall = {
@@ -34,7 +37,7 @@ def generate_config(context):
             'metadata': {
                 'dependsOn': ['network'],
             },
-            'properties': instance_group_properties(context, igm_name, instance_template_name)
+            'properties': instance_group_properties(context, igm_name, instance_template_name, region)
         }
         config['resources'].append(instance_group)
 
@@ -43,7 +46,7 @@ def generate_config(context):
             'type': 'loadbalancer.py',
             'properties': {
                 'instance_group': '$(ref.instance-group.name)',
-                'region': context.properties['region'],
+                'region': region,
             }
         }
         config['resources'].append(loadbalancer)
@@ -58,7 +61,7 @@ def generate_config(context):
             'name': 'standalone-ip-address',
             'type': 'standalone_ip_address.py',
             'properties': {
-                'region': context.properties['region'],
+                'region': region,
             }
         }
         instance_group = {
@@ -68,7 +71,7 @@ def generate_config(context):
                 'dependsOn': ['network'],
             },
             'properties': instance_group_properties(context, standalone_igm_name, standalone_instance_template_name,
-                                                    public_ip='$(ref.standalone-ip-address.ip)')
+                                                    region, public_ip='$(ref.standalone-ip-address.ip)')
         }
 
         config['resources'].append(instance_group)
@@ -81,9 +84,11 @@ def generate_config(context):
     return config
 
 
-def instance_group_properties(context, igm_name, instance_template_name, public_ip=''):
+def instance_group_properties(context, igm_name, instance_template_name, region, public_ip=''):
     return {
-        'region': context.properties['region'],
+        'region': region,
+        'zone': context.properties['zone'],
+        'multiZone': context.properties['multiZone'],
         'publicIp': public_ip,
         'networkRef': '$(ref.network.networkRef)',
         'subnetRef': '$(ref.network.subnetRef)',

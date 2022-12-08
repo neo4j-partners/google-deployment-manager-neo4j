@@ -60,11 +60,13 @@ input:
     - name: graphDatabaseVersion
       title: Graph Database Version
       section: neo4j
-    - name: region
-      title: Region
-      section: neo4j
     - name: zone
       title: Zone
+      section: neo4j
+    - name: multiZone
+      title: Multiple Zones
+      subtext: Spread Neo4j server VMs across multiple zones
+      tooltip: Spreading your application load across multiple zones protects your workload against zonal failures. If a zonal failure happens, your application can continue serving from instances running in the remaining available zones in the same region.
       section: neo4j
     - name: nodeCount
       title: Node Count
@@ -101,8 +103,8 @@ runtime:
     rows:
       - label: Neo4j Browser address
         value: '<a href="{{ outputs().url }}">{{ outputs().url }}</a>'
-      - label: Database region
-        value: '{{ properties().region }}'
+      - label: Database zone
+        value: '{{ properties().zone }}'
       - label: Database machine type
         value: '{{ properties().nodeType }}'
 

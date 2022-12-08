@@ -5,7 +5,8 @@ def GenerateConfig(context):
         'name': 'deployment',
         'type': 'deployment.py',
         'properties': {
-            'region': context.properties['region'],
+            'zone': context.properties['zone'],
+            'multiZone': context.properties['multiZone'],
             'nodeCount': context.properties['nodeCount'],
             'nodeType': context.properties['nodeType'],
             'diskSize': context.properties['diskSize'],

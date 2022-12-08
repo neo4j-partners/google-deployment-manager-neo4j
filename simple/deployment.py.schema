@@ -10,9 +10,10 @@ info:
     title: Neo4j Enterprise Edition Database Deployment
 
 properties:
-    region:
+    zone:
         type: string
-        default: us-east1
+    multiZone:
+        type: boolean
     nodeCount:
         type: integer
         default: 1

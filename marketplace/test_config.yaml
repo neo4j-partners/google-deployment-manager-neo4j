@@ -13,8 +13,8 @@ resources:
   - name: neo4j
     type: neo4j.py
     properties:
-      region: us-east1
-      graphDatabaseVersion: '4.4'
+      zone: us-east1-b
+      graphDatabaseVersion: '5'
       adminPassword: foo123
       nodeType: n2-standard-8
       nodeCount: 1

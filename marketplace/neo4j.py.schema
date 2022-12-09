@@ -11,16 +11,11 @@ info:
   title: Neo4j Enterprise Edition Database Deployment
 required:
   - adminPassword
+  - zone
 
 properties:
-  region:
-    type: string
-    default: us-east1
-    x-googleProperty:
-      type: GCE_REGION
   zone:
     type: string
-    default: us-east1-b
     x-googleProperty:
       type: GCE_ZONE
   graphDatabaseVersion:
@@ -28,15 +23,25 @@ properties:
     enum:
       - '4.4'
       - '5'
-    default: '5 '
+    default: '5'
   nodeCount:
     type: integer
+    enum:
+      - 1
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+      - 8
+      - 9
+      - 10
     default: 1
     minimum: 1
     maximum: 10
   nodeType:
     type: string
-    default: n2-standard-4
+    default: n2-standard-2
     x-googleProperty:
       type: GCE_MACHINE_TYPE
       zoneProperty: zone
@@ -60,6 +65,7 @@ properties:
         diskTypeProperty: diskType
   adminPassword:
     type: string
+    minLength: 8
   installGraphDataScience:
     type: boolean
     default: False
@@ -77,3 +83,6 @@ outputs:
   url:
     type: string
     description: URL to access Neo4j Browser
+  region:
+    type: string
+    description: GCP Region of Neo4j Database

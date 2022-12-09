@@ -60,9 +60,6 @@ input:
     - name: graphDatabaseVersion
       title: Graph Database Version
       section: neo4j
-    - name: region
-      title: Region
-      section: neo4j
     - name: zone
       title: Zone
       section: neo4j
@@ -81,7 +78,8 @@ input:
       section: neo4j
     - name: adminPassword
       title: Admin Password
-      validation: Please enter an admin password for the database
+      validation: Please enter an admin password for the database that is at least 8 characters long
+      subtext: Minimum length 8 characters
       section: neo4j
     - name: installGraphDataScience
       title: Install Graph Data Science
@@ -102,7 +100,7 @@ runtime:
       - label: Neo4j Browser address
         value: '<a href="{{ outputs().url }}">{{ outputs().url }}</a>'
       - label: Database region
-        value: '{{ properties().region }}'
+        value: '{{ outputs().region }}'
       - label: Database machine type
         value: '{{ properties().nodeType }}'
 

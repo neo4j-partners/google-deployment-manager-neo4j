@@ -5,7 +5,7 @@ def GenerateConfig(context):
         'name': 'deployment',
         'type': 'deployment.py',
         'properties': {
-            'region': context.properties['region'],
+            'zone': context.properties['zone'],
             'nodeCount': context.properties['nodeCount'],
             'nodeType': context.properties['nodeType'],
             'diskSize': context.properties['diskSize'],
@@ -22,6 +22,10 @@ def GenerateConfig(context):
     config['outputs'].append({
         'name': 'url',
         'value': ''.join(['http://', '$(ref.deployment.ip)', ':7474'])
+    })
+    config['outputs'].append({
+        'name': 'region',
+        'value': context.properties['zone'][:-2]
     })
 
     return config

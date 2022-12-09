@@ -12,8 +12,6 @@ properties:
         default: us-east1
     zone:
         type: string
-    multiZone:
-        type: boolean
     nodeCount:
         type: integer
         default: 1

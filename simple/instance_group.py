@@ -51,23 +51,22 @@ def generate_config(context):
             }
         }
     }
-    if context.properties['publicIp']:
-        instance_template['properties']['properties']['networkInterfaces'][0]['accessConfigs'][0]['natIP'] = context.properties['publicIp']
 
     instance_group_manager = {
         'name': properties['instanceGroupManagerName'],
-        'type': 'compute.v1.instanceGroupManager',
+        'type': 'compute.v1.regionInstanceGroupManager',
         'properties': {
             'region': context.properties['region'],
-            'zone': context.properties['zone'],
             'baseInstanceName': context.env['deployment'] + '-cluster' + '-instance',
             'instanceTemplate': '$(ref.' + properties['instanceTemplateName'] + '.selfLink)',
             'targetSize': context.properties['nodeCount']
         }
     }
-    if context.properties['multiZone']:
-        instance_group_manager['type'] = 'compute.v1.regionInstanceGroupManager'
-        instance_group_manager['properties'].pop('zone')
+    # Standalone server
+    if context.properties['publicIp']:
+        instance_template['properties']['properties']['networkInterfaces'][0]['accessConfigs'][0]['natIP'] = context.properties['publicIp']
+        instance_group_manager['type'] = 'compute.v1.instanceGroupManager'
+        instance_group_manager['properties']['zone'] = context.properties['zone']
 
     config = {'resources': [], 'outputs': []}
     config['resources'].append(instance_template)

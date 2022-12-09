@@ -88,7 +88,6 @@ def instance_group_properties(context, igm_name, instance_template_name, region,
     return {
         'region': region,
         'zone': context.properties['zone'],
-        'multiZone': context.properties['multiZone'],
         'publicIp': public_ip,
         'networkRef': '$(ref.network.networkRef)',
         'subnetRef': '$(ref.network.subnetRef)',

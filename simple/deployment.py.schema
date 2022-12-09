@@ -12,8 +12,6 @@ info:
 properties:
     zone:
         type: string
-    multiZone:
-        type: boolean
     nodeCount:
         type: integer
         default: 1

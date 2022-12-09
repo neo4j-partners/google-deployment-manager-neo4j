@@ -12,7 +12,7 @@ resources:
   - name: deployment
     type: deployment.py
     properties:
-      region: us-east1
+      zone: us-east1-b
       adminPassword: foo123
       nodeType: n2-standard-8
       nodeCount: 1

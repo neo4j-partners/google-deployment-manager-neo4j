@@ -10,6 +10,8 @@ properties:
     region:
         type: string
         default: us-east1
+    zone:
+        type: string
     nodeCount:
         type: integer
         default: 1

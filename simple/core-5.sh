@@ -77,11 +77,12 @@ install_apoc_plugin() {
 configure_graph_data_science() {
     if [[ "${installGraphDataScience}" == True && "${nodeCount}" == 1 ]]; then
         echo "Installing Graph Data Science..."
-        cp /var/lib/neo4j/products/neo4j-graph-data-science-*.jar /var/lib/neo4j/plugins
+        cp -p /var/lib/neo4j/products/neo4j-graph-data-science-*.jar /var/lib/neo4j/plugins
     fi
     if [[ $graphDataScienceLicenseKey != None ]]; then
         echo "Writing GDS license key..."
         mkdir -p /etc/neo4j/licenses
+        chown neo4j:neo4j /etc/neo4j/licenses
         echo "${graphDataScienceLicenseKey}" >/etc/neo4j/licenses/neo4j-gds.license
         sed -i '$a gds.enterprise.license_file=/etc/neo4j/licenses/neo4j-gds.license' /etc/neo4j/neo4j.conf
     fi
@@ -89,11 +90,12 @@ configure_graph_data_science() {
 configure_bloom() {
     if [[ $installBloom == True ]]; then
         echo "Installing Bloom..."
-        cp /var/lib/neo4j/products/bloom-plugin-*.jar /var/lib/neo4j/plugins
+        cp -p /var/lib/neo4j/products/bloom-plugin-*.jar /var/lib/neo4j/plugins
     fi
     if [[ $bloomLicenseKey != None ]]; then
         echo "Writing Bloom license key..."
         mkdir -p /etc/neo4j/licenses
+        chown neo4j:neo4j /etc/neo4j/licenses
         echo "${bloomLicenseKey}" >/etc/neo4j/licenses/neo4j-bloom.license
         sed -i '$a dbms.bloom.license_file=/etc/neo4j/licenses/neo4j-bloom.license' /etc/neo4j/neo4j.conf
     fi
@@ -126,6 +128,12 @@ build_neo4j_conf_file() {
     echo "server.metrics.filter=*" >>/etc/neo4j/neo4j.conf
     echo "server.metrics.csv.interval=5s" >>/etc/neo4j/neo4j.conf
     echo "dbms.routing.default_router=SERVER" >>/etc/neo4j/neo4j.conf
+
+    #this is to prevent SSRF attacks
+    #Read more here https://neo4j.com/developer/kb/protecting-against-ssrf/
+    echo "internal.dbms.cypher_ip_blocklist=10.0.0.0/8,172.16.0.0/12,192.168.0.0/16,169.254.169.0/24,fc00::/7,fe80::/10,ff00::/8" >> /etc/neo4j/neo4j.conf
+
+
     if [[ ${nodeCount} == 1 ]]; then
         echo "Running on a single node."
         sed -i s/#server.default_advertised_address=localhost/server.default_advertised_address="${nodeExternalIP}"/g /etc/neo4j/neo4j.conf

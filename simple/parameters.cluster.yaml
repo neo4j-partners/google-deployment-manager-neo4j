@@ -18,7 +18,7 @@ resources:
       nodeCount: 3
       diskSize: 20
       diskType: pd-balanced
-      graphDatabaseVersion: '4.4'
+      graphDatabaseVersion: '5'
       installGraphDataScience: False
       graphDataScienceLicenseKey: None
       installBloom: False

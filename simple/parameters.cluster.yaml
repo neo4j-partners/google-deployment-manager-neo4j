@@ -19,9 +19,9 @@ resources:
       diskSize: 20
       diskType: pd-balanced
       graphDatabaseVersion: '5'
-      installGraphDataScience: False
+      installGraphDataScience: 'No'
       graphDataScienceLicenseKey: None
-      installBloom: False
+      installBloom: 'No'
       bloomLicenseKey: None
 outputs:
   - name: ip

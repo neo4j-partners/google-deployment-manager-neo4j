@@ -31,14 +31,14 @@ properties:
         type: string
         default: '5'
     installGraphDataScience:
-        type: boolean
-        default: False
+        type: string
+        default: 'No'
     graphDataScienceLicenseKey:
         type: string
         default: 'None'
     installBloom:
-        type: boolean
-        default: False
+        type: string
+        default: 'No'
     bloomLicenseKey:
         type: string
         default: 'None'

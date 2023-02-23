@@ -20,9 +20,9 @@ resources:
       nodeCount: 1
       diskSize: 20
       diskType: pd-balanced
-      installGraphDataScience: True
+      installGraphDataScience: 'Yes'
       graphDataScienceLicenseKey: None
-      installBloom: True
+      installBloom: 'Yes'
       bloomLicenseKey: None
 outputs:
   - name: url

@@ -75,7 +75,7 @@ install_apoc_plugin() {
     mv /var/lib/neo4j/labs/apoc-*-core.jar /var/lib/neo4j/plugins
 }
 configure_graph_data_science() {
-    if [[ "${installGraphDataScience}" == True && "${nodeCount}" == 1 ]]; then
+    if [[ "${installGraphDataScience}" == 'Yes' && "${nodeCount}" == 1 ]]; then
         echo "Installing Graph Data Science..."
         cp -p /var/lib/neo4j/products/neo4j-graph-data-science-*.jar /var/lib/neo4j/plugins
     fi
@@ -88,7 +88,7 @@ configure_graph_data_science() {
     fi
 }
 configure_bloom() {
-    if [[ $installBloom == True ]]; then
+    if [[ $installBloom == 'Yes' ]]; then
         echo "Installing Bloom..."
         cp -p /var/lib/neo4j/products/bloom-plugin-*.jar /var/lib/neo4j/plugins
     fi

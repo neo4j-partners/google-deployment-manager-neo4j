@@ -1,0 +1,27 @@
+imports:
+    - path: instance_group.py
+    - path: standalone_ip_address.py
+    - path: firewall.py
+    - path: network.py
+
+info:
+    version: 5
+    title: Neo4j Community Edition Database Deployment
+
+properties:
+    zone:
+        type: string
+    nodeType:
+        type: string
+        default: n2-standard-4
+    diskSize:
+        type: integer
+        default: 20
+    diskType:
+        type: string
+    adminPassword:
+        type: string
+
+outputs:
+    ip:
+        type: string

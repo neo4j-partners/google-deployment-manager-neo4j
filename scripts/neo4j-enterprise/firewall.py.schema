@@ -1,0 +1,9 @@
+info:
+    version: 5
+    title: Firewall for Neo4j ports
+
+properties:
+    networkRef:
+        type: string
+    subnetCidr:
+        type: string

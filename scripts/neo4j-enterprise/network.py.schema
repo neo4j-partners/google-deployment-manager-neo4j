@@ -1,0 +1,15 @@
+info:
+    version: 5
+    title: Network and subnet for Neo4j deployment
+
+properties:
+    region:
+        type: string
+
+outputs:
+    networkRef:
+        type: string
+    subnetRef:
+        type: string
+    subnetCidr:
+        type: string

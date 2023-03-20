@@ -1,0 +1,22 @@
+imports:
+  - path: neo4j.py
+  - path: deployment.py
+  - path: instance_group.py
+  - path: standalone_ip_address.py
+  - path: firewall.py
+  - path: network.py
+  - path: core-5.sh
+
+resources:
+  - name: neo4j
+    type: neo4j.py
+    properties:
+      zone: us-east1-b
+      adminPassword: foo123bar
+      nodeType: n2-standard-8
+      diskSize: 20
+      diskType: pd-balanced
+outputs:
+  - name: url
+    description: URL to access Neo4j Browser
+    value: $(ref.neo4j.url)

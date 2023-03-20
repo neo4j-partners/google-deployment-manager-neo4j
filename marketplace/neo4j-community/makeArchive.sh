@@ -9,10 +9,9 @@ cp neo4j.py.schema tmp
 cp c2d_deployment_configuration.json tmp
 cp test_config.yaml tmp
 
-cp ../simple/*.py tmp
-cp ../simple/*.py.schema tmp
-cp ../simple/core-4.4.sh tmp
-cp ../simple/core-5.sh tmp
+cp ../../scripts/neo4j-community/*.py tmp
+cp ../../scripts/neo4j-community/*.py.schema tmp
+cp ../../scripts/neo4j-community/core-5.sh tmp
 
 cd tmp
 

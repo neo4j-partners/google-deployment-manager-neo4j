@@ -1,0 +1,84 @@
+metadata_version: v1
+description:
+  author:
+    title: Neo4j
+    descriptionHtml: Neo4j description HTML goes here.
+    shortDescription: Neo4j short description goes here.
+  title: Neo4j Community Edition
+  version: 5
+  support:
+    - title: Support
+      descriptionHtml: |-
+        Need a helping hand?
+        Reach out to our online community.
+      showSupportId: false
+      url: 'https://support.neo4j.com/hc/en-us'
+  softwareGroups: [ ]
+  tagline: Neo4j Community Edition
+  descriptionHtml: >-
+    <p>Neo4j is an open-source, NoSQL, native graph database that provides an
+    ACID-compliant transactional backend for your applications. This is the
+    free community edition, which is limited to one machine. For highly-available
+    and scalable Neo4j Clusters, please see neo4j.com to download the Enterprise Edition
+    .</p><p>Neo4j is referred to as a native graph database because it
+    efficiently implements the property graph model down to the storage level.
+    This means that the data is stored exactly as you whiteboard it, and the
+    database uses pointers to navigate and traverse the graph. In contrast to
+    graph processing or in-memory libraries, Neo4j also provides full database
+    characteristics, including ACID transaction compliance, cluster support, and
+    runtime failover – making it suitable to use graphs for data in production
+    scenarios.</p>
+  eulaUrl: 'https://neo4j.com/subscriptions/#editions'
+  documentations:
+    - title: Neo4j Documentation
+      url: 'https://neo4j.com/docs/'
+      description: All Neo4j Documentation
+      destinations:
+        - DESTINATION_SOLUTION_DETAILS
+        - DESTINATION_POST_DEPLOY
+      link_type: LINK_GENERAL
+    - title: Getting started in GCP
+      url: 'https://neo4j.com/developer/neo4j-google-cloud-launcher/'
+      description: Getting started guide
+      destinations:
+        - DESTINATION_SOLUTION_DETAILS
+        - DESTINATION_POST_DEPLOY
+      link_type: LINK_GENERAL
+  url: 'https://neo4j.com/lp/enterprise-cloud/?utm_content=google-marketplace'
+input:
+  sections:
+    - name: neo4j
+      title: Neo4j
+  properties:
+    - name: zone
+      title: Zone
+      section: neo4j
+    - name: nodeType
+      title: Node Type
+      section: neo4j
+    - name: diskType
+      title: Disk Type
+      section: neo4j
+    - name: diskSize
+      title: Disk Size in GB
+      section: neo4j
+    - name: adminPassword
+      title: Admin Password
+      validation: Please enter an admin password for the database that is at least 8 characters long
+      subtext: Minimum length 8 characters
+      section: neo4j
+runtime:
+  deployingMessage: Deployment takes several minutes to complete.
+  applicationTable:
+    rows:
+      - label: Neo4j Browser address
+        value: '<a href="{{ outputs().url }}">{{ outputs().url }}</a>'
+      - label: Database region
+        value: '{{ outputs().region }}'
+      - label: Database machine type
+        value: '{{ properties().nodeType }}'
+
+  primaryButton:
+    label: Log into the Neo4j Browser
+    type: TYPE_URL
+    action: '{{ outputs().url }}'

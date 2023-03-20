@@ -1,0 +1,37 @@
+imports:
+    - path: core-5.sh
+
+info:
+    version: 5
+    title: Instance group for Neo4j Database
+
+properties:
+    region:
+        type: string
+        default: us-east1
+    zone:
+        type: string
+    nodeType:
+        type: string
+        default: n2-standard-4
+    diskSize:
+        type: integer
+        default: 20
+    diskType:
+        type: string
+    adminPassword:
+        type: string
+    publicIp:
+        type: string
+    networkRef:
+        type: string
+    subnetRef:
+        type: string
+    instanceTemplateName:
+        type: string
+    instanceGroupManagerName:
+        type: string
+
+outputs:
+    name:
+        type: string

@@ -1,0 +1,13 @@
+info:
+    version: 5
+    title: External IP address for standalone Neo4j database
+
+properties:
+    region:
+        type: string
+        default: us-east1
+outputs:
+    ip:
+        type: string
+
+

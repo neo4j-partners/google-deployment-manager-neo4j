@@ -1,5 +1,5 @@
-# simple
-This is a Google Deployment Manager (DM) template that installs Neo4j Enterprise Edition.  You can run it from the  CLI.
+# scripts/neo4j-enterprise
+This is a Google Deployment Manager (DM) template that deploys Neo4j Enterprise Edition.  You can run it from the  CLI.
 
 The template provisions Instance Group Managers (IGM), pd-ssd, and a Service Account to create a Runtime Config.
 
@@ -16,7 +16,8 @@ Now, you'll need a copy of this repo.  To make a local copy, run the commands:
 
     git clone https://github.com/neo4j-partners/google-deployment-manager-neo4j.git
     cd google-deployment-manager-neo4j
-    cd simple
+    cd scripts
+    cd neo4j-enterprise
 
 ## Creating a Deployment
 This repo contains different parameters files.  You can deploy with any of them using [deploy.sh](deploy.sh).  For example, to deploy the single configuration using <i>parameters.single.yaml</i>, run the command:

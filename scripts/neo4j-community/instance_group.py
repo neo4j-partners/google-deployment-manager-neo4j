@@ -28,10 +28,10 @@ def generate_config(context):
                     'boot': True,
                     'autoDelete': True,
                     'initializeParams': {
-                        'sourceImage': sourceImage
-                    },
-                    'diskType': context.properties['diskType'],
-                    'diskSizeGb': context.properties['diskSize']
+                        'sourceImage': sourceImage,
+                        'diskType': context.properties['diskType'],
+                        'diskSizeGb': context.properties['diskSize']
+                    }
                 }],
                 'metadata': {'items': [{'key': 'startup-script', 'value': generate_startup_script(context)}]},
                 'serviceAccounts': [{

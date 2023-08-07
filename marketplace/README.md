@@ -22,7 +22,7 @@ Now we need to decide what OS image to use.  We're using the latest RHEL.  You c
 
 Then you're going to want to set these variables based on what you found above.
 
-    IMAGE_VERSION=v20220406
+    IMAGE_VERSION=v20230711
     IMAGE_NAME=rhel-8-${IMAGE_VERSION}
 
 Next, create an image for each license:
@@ -53,14 +53,16 @@ Now we're going to delete the VM.  We'll be left with its boot disk.  This comma
 We were previously piping yes, but that doesn't seem to be working currently, so you'll have to type "y" a few times.
 
 ```
-gcloud compute images create neo4j-enterprise-edition-byol-v20220418 \
+gcloud compute images create ${INSTANCE} \
 --project "neo4j-aura-gcp" \
---source-disk projects/neo4j-aura-gcp/zones/us-central1-f/disks/neo4j-enterprise-edition-byol-v20220406 \
+--source-disk projects/neo4j-aura-gcp/zones/us-central1-f/disks/${INSTANCE} \
 --licenses projects/neo4j-aura-gcp/global/licenses/neo4j-enterprise-edition-byol \
 --description ADD_DESCRIPTION
 ```
 
 Grant allAuthenticatedUsers account access to Compute Image User or else the submission will fail
+
+Update the IMAGE_VERSION in c2d_deployment_configuration.json and instance_group.py files before making archive and submitting on portal
 
 # Build VM Image For Community Edition
 You only need to do this occassionally, when the underlying OS is out of date.  The image has no Neo4j bits on it, so you don't need to do it when you bump the Neo4j version.
@@ -110,3 +112,5 @@ gcloud compute images create ${INSTANCE} \
 ```
 
 Grant allAuthenticatedUsers account access to Compute Image User or else the submission will fail
+
+Update the IMAGE_VERSION in c2d_deployment_configuration.json and instance_group.py files before making archive and submitting on portal

@@ -22,7 +22,7 @@ Now we need to decide what OS image to use.  We're using the latest RHEL.  You c
 
 Then you're going to want to set these variables based on what you found above.
 
-    IMAGE_VERSION=v20230711
+    IMAGE_VERSION=v20230809
     IMAGE_NAME=rhel-8-${IMAGE_VERSION}
 
 Next, create an image for each license:

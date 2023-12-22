@@ -22,7 +22,7 @@ Now we need to decide what OS image to use.  We're using the latest RHEL.  You c
 
 Then you're going to want to set these variables based on what you found above.
 
-    IMAGE_VERSION=v20230809
+    IMAGE_VERSION=v20231212
     IMAGE_NAME=rhel-8-${IMAGE_VERSION}
 
 Next, create an image for each license:
@@ -60,7 +60,7 @@ gcloud compute images create ${INSTANCE} \
 --description ADD_DESCRIPTION
 ```
 
-Grant allAuthenticatedUsers account access to Compute Image User or else the submission will fail
+Grant allAuthenticatedUsers account access to Compute Image User on the new image or else the submission will fail
 
 Update the IMAGE_VERSION in c2d_deployment_configuration.json and instance_group.py files before making archive and submitting on portal
 
@@ -111,6 +111,6 @@ gcloud compute images create ${INSTANCE} \
 --description ADD_DESCRIPTION
 ```
 
-Grant allAuthenticatedUsers account access to Compute Image User or else the submission will fail
+Grant allAuthenticatedUsers account access to Compute Image User on the new image or else the submission will fail
 
 Update the IMAGE_VERSION in c2d_deployment_configuration.json and instance_group.py files before making archive and submitting on portal

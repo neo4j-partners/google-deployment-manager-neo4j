@@ -30,13 +30,14 @@ jobs:
         with:
           version: '>= 363.0.0'
 
-      - name: 'Use gcloud CLI'
-        run: 'gcloud info'
+      - name: Execute tests
+        run: |                      
+            DATE=`echo $(date '+%Y%m%d-%S-%2N')`
+            DEPNAME=`echo ghactions-gcp-$DATE`
+            ./scripts/neo4j-community/deploy.sh $DEPNAME 
 
-#      - name: Azure Login
-#        uses: azure/login@v1
-#        with:
-#          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+
 #
 #      - name: Configure Resource Group and Deployment variables
 #        id: variables

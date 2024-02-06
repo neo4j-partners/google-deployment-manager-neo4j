@@ -34,7 +34,12 @@ jobs:
         run: |                      
             DATE=`echo $(date '+%Y%m%d-%S-%2N')`
             DEPNAME=`echo ghactions-gcp-$DATE`
-            ./scripts/neo4j-community/deploy.sh $DEPNAME 
+            ./scripts/neo4j-community/deploy.sh $DEPNAME > output.txt
+            IP=$(cat output.txt | tail -1 | awk -F " " '{print $2}')
+            wait 10m
+            curl -LJO https://github.com/neo4j/neo4jtester/raw/main/build/neo4jtester_linux
+            chmod +x ./neo4jtester_linux
+            ./neo4jtester_linux "http://${IP}:7474" "neo4j" "foobar123%'" "Community"            
 
 
 

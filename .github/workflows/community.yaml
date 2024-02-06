@@ -1,0 +1,20 @@
+imports:
+  - path: deployment.py
+  - path: instance_group.py
+  - path: standalone_ip_address.py
+  - path: firewall.py
+  - path: network.py
+  - path: core-5.sh
+
+resources:
+  - name: deployment
+    type: deployment.py
+    properties:
+      zone: us-east1-b
+      adminPassword: foobar123%'
+      nodeType: n1-standard-4
+      diskSize: 20
+      diskType: pd-balanced
+outputs:
+  - name: ip
+    value: $(ref.deployment.ip)

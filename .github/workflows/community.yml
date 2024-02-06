@@ -36,7 +36,7 @@ jobs:
             DEPNAME=`echo ghactions-gcp-$DATE`
             ls -lst
             cd scripts/neo4j-community
-            deploy.sh $DEPNAME > output.txt
+            ./deploy.sh $DEPNAME > output.txt
             IP=$(cat output.txt | tail -1 | awk -F " " '{print $2}')
             echo $IP
             wait 10m

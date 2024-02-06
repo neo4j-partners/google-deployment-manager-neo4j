@@ -1,5 +1,5 @@
 def generate_config(context):
-    sourceImage = 'projects/neo4j-aura-gcp/global/images/neo4j-community-edition-default-v20230306'
+    sourceImage = 'projects/neo4j-aura-gcp/global/images/neo4j-community-edition-default-v20240110'
     properties = context.properties
     prefix = context.env['deployment']
 

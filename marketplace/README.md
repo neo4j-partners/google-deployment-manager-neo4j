@@ -23,11 +23,11 @@ Now we need to decide what OS image to use.  We're using the latest RHEL.  You c
 Then you're going to want to set these variables based on what you found above.
 
     IMAGE_VERSION=v20231212
-    IMAGE_NAME=rhel-8-${IMAGE_VERSION}
+    IMAGE_NAME=rhel-9-${IMAGE_VERSION}
 
 Next, create an image for each license:
 
-    LICENSE=neo4j-enterprise-edition-byol
+    LICENSE=neo4j-enterprise-edition-v9-byol
     INSTANCE=${LICENSE}-${IMAGE_VERSION}
     gcloud compute instances create ${INSTANCE} \
     --project "neo4j-aura-gcp" \
@@ -76,8 +76,8 @@ Now we need to decide what OS image to use.  We're using the latest RHEL.  You c
 Then you're going to want to set these variables based on what you found above.
 
     IMAGE_VERSION=v20220406
-    IMAGE_NAME=rhel-8-${IMAGE_VERSION}
-    LICENSE=neo4j-community-edition-default
+    IMAGE_NAME=rhel-9-${IMAGE_VERSION}
+    LICENSE=neo4j-community-edition-default-v9
     INSTANCE=${LICENSE}-${IMAGE_VERSION}
 
 Next, create an image for each license:
@@ -107,8 +107,8 @@ We were previously piping yes, but that doesn't seem to be working currently, so
 gcloud compute images create ${INSTANCE} \
 --project "neo4j-aura-gcp" \
 --source-disk projects/neo4j-aura-gcp/zones/us-central1-f/disks/${INSTANCE} \
---licenses projects/neo4j-aura-gcp/global/licenses/${LICENSE} \
---description ADD_DESCRIPTION
+--description neo4j-community
+--licenses projects/neo4j-aura-gcp/global/licenses/neo4j-community-edition-default \
 ```
 
 Grant allAuthenticatedUsers account access to Compute Image User on the new image or else the submission will fail

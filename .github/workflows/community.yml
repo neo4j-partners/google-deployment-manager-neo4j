@@ -39,7 +39,8 @@ jobs:
             ./deploy.sh $DEPNAME > output.txt
             IP=$(cat output.txt | tail -1 | awk -F " " '{print $2}')
             echo $IP
-            sleep 10m
+            echo "waiting for 5mins for neo4j to come up"
+            sleep 5m
             curl -LJO https://github.com/neo4j/neo4jtester/raw/main/build/neo4jtester_linux
             chmod +x ./neo4jtester_linux
             ./neo4jtester_linux "neo4j://${IP}:7687" "neo4j" "foobar123%'" "Community"            

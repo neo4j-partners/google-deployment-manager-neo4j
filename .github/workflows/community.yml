@@ -43,8 +43,7 @@ jobs:
             curl -LJO https://github.com/neo4j/neo4jtester/raw/main/build/neo4jtester_linux
             chmod +x ./neo4jtester_linux
             ./neo4jtester_linux "neo4j://${IP}:7687" "neo4j" "foobar123%'" "Community"            
-
-
+            gcloud deployment-manager deployments delete $DEPNAME --async --quiet
 
 #
 #      - name: Configure Resource Group and Deployment variables

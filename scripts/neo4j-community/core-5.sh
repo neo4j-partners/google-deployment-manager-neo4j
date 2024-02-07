@@ -91,8 +91,26 @@ start_neo4j() {
     done
 }
 
+gcloud_variable_update() {
+  sudo tee -a /etc/yum.repos.d/google-cloud-sdk.repo << EOM
+[google-cloud-cli]
+name=Google Cloud CLI
+baseurl=https://packages.cloud.google.com/yum/repos/cloud-sdk-el9-x86_64
+enabled=1
+gpgcheck=1
+repo_gpgcheck=0
+gpgkey=https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+EOM
+
+  sudo dnf install -y google-cloud-cli
+
+  gcloud beta runtime-config configs variables set deploymentSuccess completed --config-name status
+
+}
+
 configure_firewalld
 install_neo4j_from_yum
 install_apoc_plugin
 build_neo4j_conf_file
 start_neo4j
+gcloud_variable_update

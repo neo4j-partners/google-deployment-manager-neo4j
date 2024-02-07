@@ -3,9 +3,21 @@ def generate_config(context):
     standalone_instance_template_name = prefix + '-standalone-it'
     standalone_igm_name = prefix + '-standalone' + '-igm'
     region = context.properties['zone'][:-2]
+
+    runTimeConfig = {
+        'name': 'status',
+        'type': 'runtimeconfig.v1beta1.config',
+        'properties': {
+            'config': 'status',
+            'description': 'deploymentStatus'
+        }
+    }
     network = {
         'name': 'network',
         'type': 'network.py',
+        'metadata': {
+            'dependsOn': ['status'],
+        },
         'properties': {
             'region': region,
         }
@@ -24,6 +36,7 @@ def generate_config(context):
     }
 
     config = {'resources': [], 'outputs': []}
+    config['resources'].append(runTimeConfig)
     config['resources'].append(network)
     config['resources'].append(firewall)
 
@@ -44,7 +57,27 @@ def generate_config(context):
                                                 region, public_ip='$(ref.standalone-ip-address.ip)')
     }
 
+    waiter = {
+        'name': 'customWaiter',
+        'type': 'runtimeconfig.v1beta1.waiter',
+        'metadata': {
+            'dependsOn': [standalone_instance_template_name],
+        },
+        'properties': {
+            'parent': '$(ref.status.name)',
+            'waiter': 'statusWaiter',
+            'timeout': '300s',
+             'success': {
+               'cardinality': {
+                 'path': '/deploymentSuccess',
+                 'number': 1,
+               },
+             }
+        }
+    }
+
     config['resources'].append(instance_group)
+    config['resources'].append(waiter)
     config['resources'].append(public_ip_address)
 
     config['outputs'].append({

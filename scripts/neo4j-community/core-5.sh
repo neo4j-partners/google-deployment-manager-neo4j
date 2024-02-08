@@ -5,7 +5,7 @@ echo "Running core-5.sh for Neo4j Community Edition"
 echo "Using the settings:"
 echo deployment \'$deployment\'
 echo region \'$region\'
-echo adminPassword \'$adminPassword\'
+echo runTimeConfigName \'$runTimeConfigName\'
 readonly nodeExternalIP="$(curl -H "Metadata-Flavor: Google" http://metadata/computeMetadata/v1/instance/network-interfaces/0/access-configs/0/external-ip)"
 
 configure_firewalld() {
@@ -91,20 +91,11 @@ start_neo4j() {
     done
 }
 
+#this functions create a variable called success/neo4j which is watched by the waiter resource
+#this is useful to mark the completion of the startup script and helps the deployment manager to wait until this steps is executed
 gcloud_variable_update() {
-  sudo tee -a /etc/yum.repos.d/google-cloud-sdk.repo << EOM
-[google-cloud-cli]
-name=Google Cloud CLI
-baseurl=https://packages.cloud.google.com/yum/repos/cloud-sdk-el9-x86_64
-enabled=1
-gpgcheck=1
-repo_gpgcheck=0
-gpgkey=https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
-EOM
 
-  sudo dnf install -y google-cloud-cli
-
-  gcloud beta runtime-config configs variables set deploymentSuccess completed --config-name status
+  gcloud beta runtime-config configs variables set success/neo4j-$nodeExternalIP success-$nodeExternalIP --config-name "${runTimeConfigName}"
 
 }
 

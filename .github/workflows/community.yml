@@ -14,8 +14,6 @@ jobs:
   test-template-standalone-v5:
     name: Test Deployment Manager (Neo4j Community Standalone)
     runs-on: ubuntu-latest
-    env:
-      ResourceGroupLocation: northeurope
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -34,67 +32,12 @@ jobs:
         run: |                      
             DATE=`echo $(date '+%Y%m%d-%S-%2N')`
             DEPNAME=`echo ghactions-gcp-$DATE`
-            ls -lst
             cd scripts/neo4j-community
             ./deploy.sh $DEPNAME > output.txt
-            IP=$(cat output.txt | tail -1 | awk -F " " '{print $2}')
+            IP=$(cat output.txt | grep -E '^ip(.*)' | awk -F " " '{print $2}')
             echo $IP
-            echo "waiting for 5mins for neo4j to come up"
-            sleep 5m
             curl -LJO https://github.com/neo4j/neo4jtester/raw/main/build/neo4jtester_linux
             chmod +x ./neo4jtester_linux
-            ./neo4jtester_linux "neo4j://${IP}:7687" "neo4j" "foobar123%'" "Community"            
+            ./neo4jtester_linux "neo4j://${IP}:7687" "neo4j" "foobar123%'" "Community"
+            echo "Deleting deployment manager"
             gcloud deployment-manager deployments delete $DEPNAME --async --quiet
-
-#
-#      - name: Configure Resource Group and Deployment variables
-#        id: variables
-#        run: |
-#          DATE=`echo $(date '+%Y%m%d-%S-%2N')`
-#          RGNAME=`echo ghactions-rg-$DATE`
-#          DEPNAME=`echo ghactions-dep-$DATE`
-#          ARTIFACTS_LOCATION=`echo https://raw.githubusercontent.com/${{ github.repository }}/${{ github.head_ref }}/`
-#          if ${{ github.event_name == 'workflow_dispatch' }}; then
-#            ARTIFACTS_LOCATION=`echo https://raw.githubusercontent.com/${{ github.repository }}/${{ github.ref_name }}/`
-#          fi
-#          echo "rgName=$RGNAME" >> $GITHUB_OUTPUT
-#          echo "artifactsLocation=$ARTIFACTS_LOCATION" >> $GITHUB_OUTPUT
-#          echo "depName=$DEPNAME" >> $GITHUB_OUTPUT
-#          echo "Resource Group name: $RGNAME"
-#          echo "Deployment name: $DEPNAME"
-#
-#      - name: Create Resource Group
-#        uses: Azure/CLI@v1
-#        id: rgCreate
-#        with:
-#          inlineScript: |
-#            #!/bin/bash
-#            az group create --name ${{ steps.variables.outputs.rgName }} --location ${{ env.ResourceGroupLocation }}
-#            echo "Azure resource group created"
-#            echo "Artifacts Location = ${{ steps.variables.outputs.artifactsLocation }}"
-#
-#      - name: Deploy ARM Template (Neo4j Standalone v5)
-#        id: deployARM
-#        uses: azure/arm-deploy@v1
-#        with:
-#          resourceGroupName: ${{ steps.variables.outputs.rgName }}
-#          template: ./marketplace/neo4j-community/mainTemplate.json
-#          parameters: ./marketplace/neo4j-community/parameters.json _artifactsLocation=${{ steps.variables.outputs.artifactsLocation }}
-#          deploymentName: ${{ steps.variables.outputs.depName }}
-#
-#      - name: Execute tests
-#        run: |
-#          URI=$(echo "${{ steps.deployARM.outputs.neo4jBrowserURL }}" | sed 's/http/neo4j/g;s/7474\//7687/g')
-#          PASSWORD=$(cat ./marketplace/neo4j-community/parameters.json | jq .adminPassword.value | sed 's/"//g')
-#          curl -LJO https://github.com/neo4j/neo4jtester/raw/main/build/neo4jtester_linux
-#          chmod +x ./neo4jtester_linux
-#          ./neo4jtester_linux "${URI}" "neo4j" "${PASSWORD}" "Community"
-#
-#      - name: Delete Resource Group
-#        if: always()
-#        uses: Azure/CLI@v1
-#        with:
-#          inlineScript: |
-#            #!/bin/bash
-#            az group delete --name ${{ steps.variables.outputs.rgName }} --yes
-#            echo "Azure resource group deleted !!"

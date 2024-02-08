@@ -1,5 +1,7 @@
 imports:
   - path: deployment.py
+  - path: runtime_config.py
+  - path: waiter.py
   - path: instance_group.py
   - path: standalone_ip_address.py
   - path: firewall.py
@@ -7,20 +9,6 @@ imports:
   - path: core-5.sh
 
 resources:
-#  - name: customWaiter
-#    type: runtimeconfig.v1beta1.waiter
-#    metadata:
-#      dependsOn:
-#        - deployment
-#        - status
-#    properties:
-#      parent: $(ref.status.name)
-#      waiter: "statusWaiter"
-#      timeout: 300s
-#      success:
-#        cardinality:
-#          path: /deploymentSuccess
-#          number: 1
   - name: deployment
     type: deployment.py
     properties:
@@ -33,3 +21,5 @@ resources:
 outputs:
   - name: ip
     value: $(ref.deployment.ip)
+  - name: Neo4jBrowserURL
+    value: $(ref.deployment.neo4jbrowserurl)

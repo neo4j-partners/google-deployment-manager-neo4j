@@ -1,22 +1,20 @@
 def generate_config(context):
     prefix = context.env['deployment']
     standalone_instance_template_name = prefix + '-standalone-it'
+
     standalone_igm_name = prefix + '-standalone' + '-igm'
     region = context.properties['zone'][:-2]
 
-    runTimeConfig = {
-        'name': 'status',
-        'type': 'runtimeconfig.v1beta1.config',
-        'properties': {
-            'config': 'status',
-            'description': 'deploymentStatus'
-        }
+    runtime_config = {
+        'name': 'runtime_config',
+        'type': 'runtime_config.py',
     }
+
     network = {
         'name': 'network',
         'type': 'network.py',
         'metadata': {
-            'dependsOn': ['status'],
+            'dependsOn': ['runtime_config'],
         },
         'properties': {
             'region': region,
@@ -36,7 +34,7 @@ def generate_config(context):
     }
 
     config = {'resources': [], 'outputs': []}
-    config['resources'].append(runTimeConfig)
+    config['resources'].append(runtime_config)
     config['resources'].append(network)
     config['resources'].append(firewall)
 
@@ -58,21 +56,12 @@ def generate_config(context):
     }
 
     waiter = {
-        'name': 'customWaiter',
-        'type': 'runtimeconfig.v1beta1.waiter',
-        'metadata': {
-            'dependsOn': [standalone_instance_template_name],
-        },
+        'name': 'waiter',
+        'type': 'waiter.py',
         'properties': {
-            'parent': '$(ref.status.name)',
-            'waiter': 'statusWaiter',
-            'timeout': '300s',
-             'success': {
-               'cardinality': {
-                 'path': '/deploymentSuccess',
-                 'number': 1,
-               },
-             }
+            'dependsOn': standalone_igm_name,
+            'count': 1,
+            'runtime_config_name': '$(ref.runtime_config.fullName)'
         }
     }
 
@@ -84,11 +73,15 @@ def generate_config(context):
         'name': 'ip',
         'value': '$(ref.standalone-ip-address.ip)'
     })
+    config['outputs'].append({
+        'name': 'neo4jbrowserurl',
+        'value': 'http://$(ref.standalone-ip-address.ip):7474'
+    })
 
     return config
 
 
-def instance_group_properties(context, igm_name, instance_template_name, region, public_ip=''):
+def instance_group_properties(context, igm_name, instance_template_name, region,public_ip=''):
     return {
         'region': region,
         'zone': context.properties['zone'],
@@ -100,5 +93,6 @@ def instance_group_properties(context, igm_name, instance_template_name, region,
         'nodeType': context.properties['nodeType'],
         'diskSize': context.properties['diskSize'],
         'diskType': context.properties['diskType'],
-        'adminPassword': context.properties['adminPassword']
+        'adminPassword': context.properties['adminPassword'],
+        'runTimeConfigName': '$(ref.runtime_config.name)'
     }

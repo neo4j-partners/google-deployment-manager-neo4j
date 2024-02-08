@@ -1,0 +1,140 @@
+name: Test Deployment Manager for Enterprise
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - marketplace/neo4j-enterprise/**
+      - scripts/neo4j-enterprise/**
+      - .github/**
+    branches:
+      - main
+
+jobs:
+  test-template-standalone-v5:
+    name: Test Deployment Manager (Neo4j Enterprise Standalone)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - id: 'auth'
+        uses: 'google-github-actions/auth@v2'
+        with:
+          credentials_json: '${{ secrets.GOOGLE_CREDS }}'
+
+      - name: 'Set up Cloud SDK'
+        uses: 'google-github-actions/setup-gcloud@v2'
+        with:
+          version: '>= 363.0.0'
+
+      - name: Execute tests
+        run: |
+          DATE=`echo $(date '+%Y%m%d-%S-%2N')`
+          DEPNAME=`echo ghactions-gcp-$DATE`
+          cd scripts/neo4j-enterprise
+          ./deploy.sh $DEPNAME single > output.txt
+          IP=$(cat output.txt | grep -E '^ip(.*)' | awk -F " " '{print $2}')
+          echo $IP
+          curl -LJO https://github.com/neo4j/neo4jtester/raw/main/build/neo4jtester_linux
+          chmod +x ./neo4jtester_linux
+          ./neo4jtester_linux "neo4j://${IP}:7687" "neo4j" "foobar123%'" "Enterprise"
+          echo "Deleting deployment manager"
+          gcloud deployment-manager deployments delete $DEPNAME --async --quiet
+
+  test-template-cluster-v5:
+    name: Test Deployment Manager (Neo4j Enterprise Cluster)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - id: 'auth'
+        uses: 'google-github-actions/auth@v2'
+        with:
+          credentials_json: '${{ secrets.GOOGLE_CREDS }}'
+
+      - name: 'Set up Cloud SDK'
+        uses: 'google-github-actions/setup-gcloud@v2'
+        with:
+          version: '>= 363.0.0'
+
+      - name: Execute tests
+        run: |
+          DATE=`echo $(date '+%Y%m%d-%S-%2N')`
+          DEPNAME=`echo ghactions-gcp-$DATE`
+          cd scripts/neo4j-enterprise
+          ./deploy.sh $DEPNAME cluster > output.txt
+          IP=$(cat output.txt | grep -E '^ip(.*)' | awk -F " " '{print $2}')
+          echo $IP
+          curl -LJO https://github.com/neo4j/neo4jtester/raw/main/build/neo4jtester_linux
+          chmod +x ./neo4jtester_linux
+          ./neo4jtester_linux "neo4j://${IP}:7687" "neo4j" "foobar123%'" "Enterprise"
+          echo "Deleting deployment manager"
+          gcloud deployment-manager deployments delete $DEPNAME --async --quiet
+
+  test-template-standalone-v44:
+    name: Test Deployment Manager (Neo4j Enterprise Standalone v4.4)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - id: 'auth'
+        uses: 'google-github-actions/auth@v2'
+        with:
+          credentials_json: '${{ secrets.GOOGLE_CREDS }}'
+
+      - name: 'Set up Cloud SDK'
+        uses: 'google-github-actions/setup-gcloud@v2'
+        with:
+          version: '>= 363.0.0'
+
+      - name: Execute tests
+        run: |
+          DATE=`echo $(date '+%Y%m%d-%S-%2N')`
+          DEPNAME=`echo ghactions-gcp-$DATE`
+          cd scripts/neo4j-enterprise
+          sed "s/graphDatabaseVersion: '5'/graphDatabaseVersion: '4.4'/g" parameters.single.yaml
+          cat parameters.single.yaml
+          ./deploy.sh $DEPNAME single > output.txt
+          IP=$(cat output.txt | grep -E '^ip(.*)' | awk -F " " '{print $2}')
+          echo $IP
+          curl -LJO https://github.com/neo4j/neo4jtester/raw/main/build/neo4jtester_linux
+          chmod +x ./neo4jtester_linux
+          ./neo4jtester_linux "neo4j://${IP}:7687" "neo4j" "foobar123%'" "Enterprise"
+          echo "Deleting deployment manager"
+          gcloud deployment-manager deployments delete $DEPNAME --async --quiet
+
+  test-template-cluster-v44:
+    name: Test Deployment Manager (Neo4j Enterprise Cluster v4.4)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - id: 'auth'
+        uses: 'google-github-actions/auth@v2'
+        with:
+          credentials_json: '${{ secrets.GOOGLE_CREDS }}'
+
+      - name: 'Set up Cloud SDK'
+        uses: 'google-github-actions/setup-gcloud@v2'
+        with:
+          version: '>= 363.0.0'
+
+      - name: Execute tests
+        run: |
+          DATE=`echo $(date '+%Y%m%d-%S-%2N')`
+          DEPNAME=`echo ghactions-gcp-$DATE`
+          cd scripts/neo4j-enterprise
+          sed "s/graphDatabaseVersion: '5'/graphDatabaseVersion: '4.4'/g" parameters.cluster.yaml
+          cat parameters.cluster.yaml
+          ./deploy.sh $DEPNAME cluster > output.txt
+          IP=$(cat output.txt | grep -E '^ip(.*)' | awk -F " " '{print $2}')
+          echo $IP
+          curl -LJO https://github.com/neo4j/neo4jtester/raw/main/build/neo4jtester_linux
+          chmod +x ./neo4jtester_linux
+          ./neo4jtester_linux "neo4j://${IP}:7687" "neo4j" "foobar123%'" "Community"
+          echo "Deleting deployment manager"
+          gcloud deployment-manager deployments delete $DEPNAME --async --quiet

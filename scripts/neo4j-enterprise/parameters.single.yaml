@@ -1,6 +1,8 @@
 imports:
   - path: deployment.py
   - path: loadbalancer.py
+  - path: runtime_config.py
+  - path: waiter.py
   - path: instance_group.py
   - path: standalone_ip_address.py
   - path: firewall.py
@@ -26,3 +28,5 @@ resources:
 outputs:
   - name: ip
     value: $(ref.deployment.ip)
+  - name: Neo4jBrowserURL
+    value: $(ref.deployment.neo4jbrowserurl)

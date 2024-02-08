@@ -1,0 +1,15 @@
+info:
+    version: 5
+    title: RunTimeConfig for Neo4j deployment
+
+properties:
+    config:
+        type: string
+    description:
+         type: string
+
+outputs:
+    fullName:
+        type: string
+    name:
+        type: string

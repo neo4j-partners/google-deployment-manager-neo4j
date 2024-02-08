@@ -1,0 +1,13 @@
+info:
+    version: 5
+    title: Waiter for Neo4j deployment
+
+properties:
+    parent:
+        type: string
+    waiter:
+        type: string
+    timeout:
+        type: string
+    success:
+        type: object    

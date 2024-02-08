@@ -28,19 +28,29 @@ jobs:
         with:
           version: '>= 363.0.0'
 
+      - name: Configure Deployment Name
+        id: variables
+        run: |
+          DATE=`echo $(date '+%Y%m%d-%S-%2N')`          
+          DEPNAME=`echo ghactions-gcp-$DATE`
+          echo "depName=$DEPNAME" >> $GITHUB_OUTPUT
+
       - name: Execute tests
         run: |
-          DATE=`echo $(date '+%Y%m%d-%S-%2N')`
-          DEPNAME=`echo ghactions-gcp-$DATE`
-          cd scripts/neo4j-enterprise
-          ./deploy.sh $DEPNAME single > output.txt
+          gcloud deployment-manager deployments create ${{ steps.variables.outputs.depName }} --config scripts/neo4j-enterprise/parameters.single.yaml > output.txt
+          echo "Printing output \n "
+          cat output.txt
           IP=$(cat output.txt | grep -E '^ip(.*)' | awk -F " " '{print $2}')
-          echo $IP
+          PASSWORD=$(cat scripts/neo4j-enterprise/parameters.single.yaml | grep adminPassword | awk -F ": " '{print $2}')
           curl -LJO https://github.com/neo4j/neo4jtester/raw/main/build/neo4jtester_linux
           chmod +x ./neo4jtester_linux
-          ./neo4jtester_linux "neo4j://${IP}:7687" "neo4j" "foobar123%'" "Enterprise"
+          ./neo4jtester_linux "neo4j://${IP}:7687" "neo4j" "${PASSWORD}" "Enterprise"
+
+      - name: Delete DeploymentManager
+        if: always()
+        run: |
           echo "Deleting deployment manager"
-          gcloud deployment-manager deployments delete $DEPNAME --async --quiet
+          gcloud deployment-manager deployments delete ${{ steps.variables.outputs.depName }} --async --quiet
 
   test-template-cluster-v5:
     name: Test Deployment Manager (Neo4j Enterprise Cluster)
@@ -59,19 +69,30 @@ jobs:
         with:
           version: '>= 363.0.0'
 
+      - name: Configure Deployment Name
+        id: variables
+        run: |
+          DATE=`echo $(date '+%Y%m%d-%S-%2N')`          
+          DEPNAME=`echo ghactions-gcp-$DATE`
+          echo "depName=$DEPNAME" >> $GITHUB_OUTPUT
+
       - name: Execute tests
         run: |
-          DATE=`echo $(date '+%Y%m%d-%S-%2N')`
-          DEPNAME=`echo ghactions-gcp-$DATE`
-          cd scripts/neo4j-enterprise
-          ./deploy.sh $DEPNAME cluster > output.txt
+          gcloud deployment-manager deployments create ${{ steps.variables.outputs.depName }} --config scripts/neo4j-enterprise/parameters.cluster.yaml > output.txt
+          echo "Printing output \n "
+          cat output.txt
           IP=$(cat output.txt | grep -E '^ip(.*)' | awk -F " " '{print $2}')
-          echo $IP
+          PASSWORD=$(cat scripts/neo4j-enterprise/parameters.cluster.yaml | grep adminPassword | awk -F ": " '{print $2}')
           curl -LJO https://github.com/neo4j/neo4jtester/raw/main/build/neo4jtester_linux
           chmod +x ./neo4jtester_linux
-          ./neo4jtester_linux "neo4j://${IP}:7687" "neo4j" "foobar123%'" "Enterprise"
+          ./neo4jtester_linux "neo4j://${IP}:7687" "neo4j" "${PASSWORD}" "Enterprise"
+
+      - name: Delete DeploymentManager
+        if: always()
+        run: |
           echo "Deleting deployment manager"
-          gcloud deployment-manager deployments delete $DEPNAME --async --quiet
+          gcloud deployment-manager deployments delete ${{ steps.variables.outputs.depName }} --async --quiet
+
 
   test-template-standalone-v44:
     name: Test Deployment Manager (Neo4j Enterprise Standalone v4.4)
@@ -90,21 +111,31 @@ jobs:
         with:
           version: '>= 363.0.0'
 
+      - name: Configure Deployment Name
+        id: variables
+        run: |
+          DATE=`echo $(date '+%Y%m%d-%S-%2N')`          
+          DEPNAME=`echo ghactions-gcp-$DATE`
+          echo "depName=$DEPNAME" >> $GITHUB_OUTPUT
+
       - name: Execute tests
         run: |
-          DATE=`echo $(date '+%Y%m%d-%S-%2N')`
-          DEPNAME=`echo ghactions-gcp-$DATE`
-          cd scripts/neo4j-enterprise
           sed -i "s/graphDatabaseVersion: '5'/graphDatabaseVersion: '4.4'/g" parameters.single.yaml
-          cat parameters.single.yaml
-          ./deploy.sh $DEPNAME single > output.txt
+          gcloud deployment-manager deployments create ${{ steps.variables.outputs.depName }} --config scripts/neo4j-enterprise/parameters.single.yaml > output.txt
+          echo "Printing output \n "
+          cat output.txt
           IP=$(cat output.txt | grep -E '^ip(.*)' | awk -F " " '{print $2}')
-          echo $IP
+          PASSWORD=$(cat scripts/neo4j-enterprise/parameters.single.yaml | grep adminPassword | awk -F ": " '{print $2}')
           curl -LJO https://github.com/neo4j/neo4jtester/raw/main/build/neo4jtester_linux
           chmod +x ./neo4jtester_linux
-          ./neo4jtester_linux "neo4j://${IP}:7687" "neo4j" "foobar123%'" "Enterprise"
+          ./neo4jtester_linux "neo4j://${IP}:7687" "neo4j" "${PASSWORD}" "Enterprise"
+
+      - name: Delete DeploymentManager
+        if: always()
+        run: |
           echo "Deleting deployment manager"
-          gcloud deployment-manager deployments delete $DEPNAME --async --quiet
+          gcloud deployment-manager deployments delete ${{ steps.variables.outputs.depName }} --async --quiet
+
 
   test-template-cluster-v44:
     name: Test Deployment Manager (Neo4j Enterprise Cluster v4.4)
@@ -123,18 +154,27 @@ jobs:
         with:
           version: '>= 363.0.0'
 
+      - name: Configure Deployment Name
+        id: variables
+        run: |
+          DATE=`echo $(date '+%Y%m%d-%S-%2N')`          
+          DEPNAME=`echo ghactions-gcp-$DATE`
+          echo "depName=$DEPNAME" >> $GITHUB_OUTPUT
+
       - name: Execute tests
         run: |
-          DATE=`echo $(date '+%Y%m%d-%S-%2N')`
-          DEPNAME=`echo ghactions-gcp-$DATE`
-          cd scripts/neo4j-enterprise
           sed -i "s/graphDatabaseVersion: '5'/graphDatabaseVersion: '4.4'/g" parameters.cluster.yaml
-          cat parameters.cluster.yaml
-          ./deploy.sh $DEPNAME cluster > output.txt
+          gcloud deployment-manager deployments create ${{ steps.variables.outputs.depName }} --config scripts/neo4j-enterprise/parameters.cluster.yaml > output.txt
+          echo "Printing output \n "
+          cat output.txt
           IP=$(cat output.txt | grep -E '^ip(.*)' | awk -F " " '{print $2}')
-          echo $IP
+          PASSWORD=$(cat scripts/neo4j-enterprise/parameters.cluster.yaml | grep adminPassword | awk -F ": " '{print $2}')
           curl -LJO https://github.com/neo4j/neo4jtester/raw/main/build/neo4jtester_linux
           chmod +x ./neo4jtester_linux
-          ./neo4jtester_linux "neo4j://${IP}:7687" "neo4j" "foobar123%'" "Community"
+          ./neo4jtester_linux "neo4j://${IP}:7687" "neo4j" "${PASSWORD}" "Enterprise"
+
+      - name: Delete DeploymentManager
+        if: always()
+        run: |
           echo "Deleting deployment manager"
-          gcloud deployment-manager deployments delete $DEPNAME --async --quiet
+          gcloud deployment-manager deployments delete ${{ steps.variables.outputs.depName }} --async --quiet

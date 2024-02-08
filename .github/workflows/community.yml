@@ -40,10 +40,11 @@ jobs:
             gcloud deployment-manager deployments create ${{ steps.variables.outputs.depName }} --config scripts/neo4j-community/parameters.single.yaml > output.txt
             echo "Printing output \n "
             cat output.txt
-            IP=$(cat output.txt | grep -E '^ip(.*)' | awk -F " " '{print $2}')            
+            IP=$(cat output.txt | grep -E '^ip(.*)' | awk -F " " '{print $2}')
+            PASSWORD=$(cat scripts/neo4j-community/parameters.single.yaml | grep adminPassword | awk -F ": " '{print $2}')
             curl -LJO https://github.com/neo4j/neo4jtester/raw/main/build/neo4jtester_linux
             chmod +x ./neo4jtester_linux
-            ./neo4jtester_linux "neo4j://${IP}:7687" "neo4j" "foobar123%'" "Community"
+            ./neo4jtester_linux "neo4j://${IP}:7687" "neo4j" "${PASSWORD}" "Community"
 
       - name: Delete DeploymentManager
         if: always()

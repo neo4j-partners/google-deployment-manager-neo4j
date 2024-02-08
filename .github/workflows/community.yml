@@ -28,16 +28,25 @@ jobs:
         with:
           version: '>= 363.0.0'
 
+      - name: Configure Deployment Name
+        id: variables
+        run: |
+          DATE=`echo $(date '+%Y%m%d-%S-%2N')`          
+          DEPNAME=`echo ghactions-gcp-$DATE`
+          echo "depName=$DEPNAME" >> $GITHUB_OUTPUT
+
       - name: Execute tests
-        run: |                      
-            DATE=`echo $(date '+%Y%m%d-%S-%2N')`
-            DEPNAME=`echo ghactions-gcp-$DATE`
-            cd scripts/neo4j-community
-            ./deploy.sh $DEPNAME > output.txt
-            IP=$(cat output.txt | grep -E '^ip(.*)' | awk -F " " '{print $2}')
-            echo $IP
+        run: |                                  
+            gcloud deployment-manager deployments create ${{ steps.variables.outputs.depName }} --config scripts/neo4j-community/parameters.single.yaml > output.txt
+            echo "Printing output \n "
+            cat output.txt
+            IP=$(cat output.txt | grep -E '^ip(.*)' | awk -F " " '{print $2}')            
             curl -LJO https://github.com/neo4j/neo4jtester/raw/main/build/neo4jtester_linux
             chmod +x ./neo4jtester_linux
             ./neo4jtester_linux "neo4j://${IP}:7687" "neo4j" "foobar123%'" "Community"
-            echo "Deleting deployment manager"
-            gcloud deployment-manager deployments delete $DEPNAME --async --quiet
+
+      - name: Delete DeploymentManager
+        if: always()
+        run: |
+          echo "Deleting deployment manager"
+          gcloud deployment-manager deployments delete ${{ steps.variables.outputs.depName }} --async --quiet

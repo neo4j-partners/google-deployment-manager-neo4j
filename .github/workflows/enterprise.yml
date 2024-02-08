@@ -95,7 +95,7 @@ jobs:
           DATE=`echo $(date '+%Y%m%d-%S-%2N')`
           DEPNAME=`echo ghactions-gcp-$DATE`
           cd scripts/neo4j-enterprise
-          sed "s/graphDatabaseVersion: '5'/graphDatabaseVersion: '4.4'/g" parameters.single.yaml
+          sed -i "s/graphDatabaseVersion: '5'/graphDatabaseVersion: '4.4'/g" parameters.single.yaml
           cat parameters.single.yaml
           ./deploy.sh $DEPNAME single > output.txt
           IP=$(cat output.txt | grep -E '^ip(.*)' | awk -F " " '{print $2}')
@@ -128,7 +128,7 @@ jobs:
           DATE=`echo $(date '+%Y%m%d-%S-%2N')`
           DEPNAME=`echo ghactions-gcp-$DATE`
           cd scripts/neo4j-enterprise
-          sed "s/graphDatabaseVersion: '5'/graphDatabaseVersion: '4.4'/g" parameters.cluster.yaml
+          sed -i "s/graphDatabaseVersion: '5'/graphDatabaseVersion: '4.4'/g" parameters.cluster.yaml
           cat parameters.cluster.yaml
           ./deploy.sh $DEPNAME cluster > output.txt
           IP=$(cat output.txt | grep -E '^ip(.*)' | awk -F " " '{print $2}')

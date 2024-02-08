@@ -120,7 +120,7 @@ jobs:
 
       - name: Execute tests
         run: |
-          sed -i "s/graphDatabaseVersion: '5'/graphDatabaseVersion: '4.4'/g" parameters.single.yaml
+          sed -i "s/graphDatabaseVersion: '5'/graphDatabaseVersion: '4.4'/g" scripts/neo4j-enterprise/parameters.single.yaml
           gcloud deployment-manager deployments create ${{ steps.variables.outputs.depName }} --config scripts/neo4j-enterprise/parameters.single.yaml > output.txt
           echo "Printing output \n "
           cat output.txt
@@ -163,7 +163,7 @@ jobs:
 
       - name: Execute tests
         run: |
-          sed -i "s/graphDatabaseVersion: '5'/graphDatabaseVersion: '4.4'/g" parameters.cluster.yaml
+          sed -i "s/graphDatabaseVersion: '5'/graphDatabaseVersion: '4.4'/g" scripts/neo4j-enterprise/parameters.cluster.yaml
           gcloud deployment-manager deployments create ${{ steps.variables.outputs.depName }} --config scripts/neo4j-enterprise/parameters.cluster.yaml > output.txt
           echo "Printing output \n "
           cat output.txt

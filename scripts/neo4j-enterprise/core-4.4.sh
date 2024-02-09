@@ -11,6 +11,7 @@ echo installGraphDataScience \'$installGraphDataScience\'
 echo graphDataScienceLicenseKey \'$graphDataScienceLicenseKey\'
 echo installBloom \'$installBloom\'
 echo bloomLicenseKey \'$bloomLicenseKey\'
+echo runTimeConfigName \'$runTimeConfigName\'
 readonly nodeExternalIP="$(curl -H "Metadata-Flavor: Google" http://metadata/computeMetadata/v1/instance/network-interfaces/0/access-configs/0/external-ip)"
 
 configure_firewalld() {
@@ -172,6 +173,14 @@ extension_config() {
     echo "dbms.security.procedures.allowlist=apoc.*,gds.*,bloom.*" >>/etc/neo4j/neo4j.conf
 }
 
+#this functions create a variable called success/neo4j which is watched by the waiter resource
+#this is useful to mark the completion of the startup script and helps the deployment manager to wait until this steps is executed
+gcloud_variable_update() {
+
+  gcloud beta runtime-config configs variables set success/neo4j-$nodeExternalIP success-$nodeExternalIP --config-name "${runTimeConfigName}"
+
+}
+
 configure_firewalld
 install_neo4j_from_yum
 install_apoc_plugin
@@ -180,3 +189,4 @@ build_neo4j_conf_file
 configure_graph_data_science
 configure_bloom
 start_neo4j
+gcloud_variable_update

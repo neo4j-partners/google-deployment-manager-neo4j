@@ -5,7 +5,7 @@ echo "Running core-5.sh for Neo4j Community Edition"
 echo "Using the settings:"
 echo deployment \'$deployment\'
 echo region \'$region\'
-echo adminPassword \'$adminPassword\'
+echo runTimeConfigName \'$runTimeConfigName\'
 readonly nodeExternalIP="$(curl -H "Metadata-Flavor: Google" http://metadata/computeMetadata/v1/instance/network-interfaces/0/access-configs/0/external-ip)"
 
 configure_firewalld() {
@@ -91,8 +91,17 @@ start_neo4j() {
     done
 }
 
+#this functions create a variable called success/neo4j which is watched by the waiter resource
+#this is useful to mark the completion of the startup script and helps the deployment manager to wait until this steps is executed
+gcloud_variable_update() {
+
+  gcloud beta runtime-config configs variables set success/neo4j-$nodeExternalIP success-$nodeExternalIP --config-name "${runTimeConfigName}"
+
+}
+
 configure_firewalld
 install_neo4j_from_yum
 install_apoc_plugin
 build_neo4j_conf_file
 start_neo4j
+gcloud_variable_update

@@ -83,6 +83,7 @@ def generate_startup_script(context):
     script += 'deployment="' + context.env['deployment'] + '"\n'
     script += 'adminPassword="' + context.properties['adminPassword'] + '"\n'
     script += 'region="' + context.properties['region'] + '"\n'
+    script += 'runTimeConfigName="' + context.properties['runTimeConfigName'] + '"\n'
     script += context.imports['core-5.sh']
 
     return script

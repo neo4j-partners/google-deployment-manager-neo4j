@@ -1,0 +1,53 @@
+name: Test Deployment Manager for Community
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - marketplace/neo4j-community/**
+      - scripts/neo4j-community/**
+      - .github/**
+    branches:
+      - main
+
+jobs:
+  test-template-standalone-v5:
+    name: Test Deployment Manager (Neo4j Community Standalone)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - id: 'auth'
+        uses: 'google-github-actions/auth@v2'
+        with:
+          credentials_json: '${{ secrets.GOOGLE_CREDS }}'
+
+      - name: 'Set up Cloud SDK'
+        uses: 'google-github-actions/setup-gcloud@v2'
+        with:
+          version: '>= 363.0.0'
+
+      - name: Configure Deployment Name
+        id: variables
+        run: |
+          DATE=`echo $(date '+%Y%m%d-%S-%2N')`          
+          DEPNAME=`echo ghactions-gcp-$DATE`
+          echo "depName=$DEPNAME" >> $GITHUB_OUTPUT
+
+      - name: Execute tests
+        run: |                                  
+            gcloud deployment-manager deployments create ${{ steps.variables.outputs.depName }} --config scripts/neo4j-community/parameters.single.yaml > output.txt
+            echo "Printing output \n "
+            cat output.txt
+            IP=$(cat output.txt | grep -E '^ip(.*)' | awk -F " " '{print $2}')
+            PASSWORD=$(cat scripts/neo4j-community/parameters.single.yaml | grep adminPassword | awk -F ": " '{print $2}')
+            curl -LJO https://github.com/neo4j/neo4jtester/raw/main/build/neo4jtester_linux
+            chmod +x ./neo4jtester_linux
+            ./neo4jtester_linux "neo4j://${IP}:7687" "neo4j" "${PASSWORD}" "Community"
+
+      - name: Delete DeploymentManager
+        if: always()
+        run: |
+          echo "Deleting deployment manager"
+          gcloud deployment-manager deployments delete ${{ steps.variables.outputs.depName }} --async --quiet
